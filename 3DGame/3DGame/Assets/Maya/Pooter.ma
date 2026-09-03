@@ -1,6 +1,6 @@
 //Maya ASCII 2027 scene
 //Name: Pooter.ma
-//Last modified: Tue, Aug 25, 2026 01:52:01 PM
+//Last modified: Tue, Aug 25, 2026 04:05:40 PM
 //Codeset: 1252
 requires maya "2027";
 requires "mtoa" "5.6.2";
@@ -11,12 +11,12 @@ fileInfo "product" "Maya 2027";
 fileInfo "version" "2027";
 fileInfo "cutIdentifier" "202607171511-52c21617ee";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26200)";
-fileInfo "UUID" "97A50A89-4A42-9ACB-6210-309457980603";
+fileInfo "UUID" "99D98AD1-4980-7C2C-ECD0-D6A047CE7FEF";
 createNode transform -s -n "persp";
 	rename -uid "17B2229E-4470-3B3B-1DCD-74A58299287E";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 0.12925524742004946 1.7224833063072122 7.4818303795837311 ;
-	setAttr ".r" -type "double3" -10.538352729620023 3.0000000000001115 -4.976436723362176e-17 ;
+	setAttr ".t" -type "double3" 4.521971989599348 1.8464881194009899 6.0263301711018489 ;
+	setAttr ".r" -type "double3" -11.138352729643008 35.399999999999615 1.4632159666237137e-15 ;
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "8CC53DFF-42A4-2EC7-8C1F-34B5B6DF88BC";
 	setAttr -k off ".v" no;
@@ -69,7 +69,7 @@ createNode camera -s -n "sideShape" -p "side";
 	setAttr -k off ".v" no;
 	setAttr ".rnd" no;
 	setAttr ".coi" 1000.1;
-	setAttr ".ow" 30;
+	setAttr ".ow" 9.5328280636668108;
 	setAttr ".imn" -type "string" "side";
 	setAttr ".den" -type "string" "side_depth";
 	setAttr ".man" -type "string" "side_mask";
@@ -2326,7 +2326,9 @@ createNode mesh -n "pDiscShape1" -p "pDisc1";
 	setAttr ".hfd" -type "dataPolyComponent" Index_Data Face 0 ;
 createNode transform -n "pDisc2";
 	rename -uid "3E686DC2-4173-E103-2E18-3984684A5108";
+	setAttr ".r" -type "double3" 0 6.7740920864820069 0 ;
 	setAttr ".rp" -type "double3" -0.0013132693976948273 0.60906214621721333 -0.008366486292629316 ;
+	setAttr ".rpt" -type "double3" 0 0 -1.1926223897340549e-18 ;
 	setAttr ".sp" -type "double3" -0.0013132693976226628 0.60906214621705135 -0.0083664862926206701 ;
 createNode mesh -n "pDiscShape2" -p "pDisc2";
 	rename -uid "ADF8E662-4FD4-5BFE-5983-94BE2DE20977";
