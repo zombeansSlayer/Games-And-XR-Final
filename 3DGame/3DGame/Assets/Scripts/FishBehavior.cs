@@ -6,17 +6,20 @@ public class FishBehavior : MonoBehaviour
     public float flyingSpeed;
     public float angryModifier;
     public float reelModifier;
+    public float sizeModifier;
     public int AILevel;
-    //public GameObject fish;
+    public GameObject fish;
 
-    List<List<Transform>> FishAreaBounds = new List<List<Transform>>();
-    List<Transform> FishBox;
-    int patience;
-    float moveTimer;
-    Vector3 floatingPosition;
+    private List<List<Transform>> FishAreaBounds = new List<List<Transform>>();
+    private List<Transform> FishBox;
+    private int patience;
+    private float moveTimer;
+    private Vector3 floatingPosition;
 
     private void Start()
     {
+        sizeModifier = (transform.localScale.x + transform.localScale.y + transform.localScale.z) / 45;
+
         foreach (GameObject t in GameObject.FindGameObjectsWithTag("Bounds"))
         {
             List<Transform> boxBounds = new List<Transform> { t.transform.GetChild(0), t.transform.GetChild(1) };
@@ -45,7 +48,7 @@ public class FishBehavior : MonoBehaviour
             floatingPosition = new Vector3(0, -10, 0);
             if (moveTimer <= 0)
             {
-                GameObject.FindWithTag("Gun").GetComponent<GUN>().fish = Instantiate(gameObject);
+                GameObject.FindWithTag("Gun").GetComponent<GUN>().fish = Instantiate(fish);
                 Destroy(gameObject);
             }
         }
@@ -61,8 +64,8 @@ public class FishBehavior : MonoBehaviour
         if (AILevel == 1 || AILevel == 2)
             gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, floatingPosition, flyingSpeed * angryModifier * Time.deltaTime);
         else if (AILevel == 3)
-            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, floatingPosition, flyingSpeed * reelModifier * Time.deltaTime);
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, floatingPosition, reelModifier * Time.deltaTime);
         else if (AILevel == 0)
-            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, floatingPosition, flyingSpeed * Time.deltaTime);
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, floatingPosition, flyingSpeed * sizeModifier * Time.deltaTime);
     }
 }

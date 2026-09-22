@@ -582,7 +582,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -602,7 +602,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flyingSpeed: 3
   angryModifier: 2
+  reelModifier: 0
   AILevel: 0
+  fish: {fileID: 5162779524384739753}
 --- !u!1 &6103466386593917007
 GameObject:
   m_ObjectHideFlags: 0
