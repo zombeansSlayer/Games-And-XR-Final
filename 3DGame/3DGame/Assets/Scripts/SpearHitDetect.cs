@@ -19,4 +19,15 @@ public class SpearHitDetect : MonoBehaviour
             hitOther = true;
         }
     }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Fish")
+        {
+            hitFish = false;
+        }
+        else if (other.tag == "Boat")
+        {
+            hitOther = false;
+        }
+    }
 }

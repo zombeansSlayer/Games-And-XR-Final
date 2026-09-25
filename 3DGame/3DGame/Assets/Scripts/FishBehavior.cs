@@ -48,7 +48,6 @@ public class FishBehavior : MonoBehaviour
             floatingPosition = new Vector3(0, -10, 0);
             if (moveTimer <= 0)
             {
-                GameObject.FindWithTag("Gun").GetComponent<GUN>().fish = Instantiate(fish);
                 Destroy(gameObject);
             }
         }
@@ -67,5 +66,10 @@ public class FishBehavior : MonoBehaviour
             gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, floatingPosition, reelModifier * Time.deltaTime);
         else if (AILevel == 0)
             gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, floatingPosition, flyingSpeed * sizeModifier * Time.deltaTime);
+        if (AILevel == 3 && Vector3.Distance(transform.position, floatingPosition) > 10)
+        {
+            AILevel = 2;
+            GameObject.FindWithTag("Gun").GetComponent<GUN>().BreakAwayFish();
+        }
     }
 }

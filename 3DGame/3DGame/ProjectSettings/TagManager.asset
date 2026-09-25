@@ -9,6 +9,7 @@ TagManager:
   - Gun
   - InvisibleWall
   - Boat
+  - Game Manager
   layers:
   - Default
   - TransparentFX

@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
+using System;
+using Unity.VisualScripting;
 
 public class GUN : MonoBehaviour
 {
@@ -13,6 +15,7 @@ public class GUN : MonoBehaviour
     public GameObject spearPrefab;
     public GameObject reelButtonPrefab;
     public GameObject rightClickGraphic;
+    public GameObject scrollGraphic;
     public Transform spearBasePos;
     public TextMeshProUGUI caughtText;
     public float baseButtonChance;
@@ -24,6 +27,8 @@ public class GUN : MonoBehaviour
     private float aiming;
     private float reelInterval;
     private float perIntervalReelPower = 0;
+    private float reelButtonBuffer = 1;
+    private float fishRespawnTimer = 8;
     public float shotSpeed;
     private bool reelSucceed = false;
     public bool reeling;
@@ -35,6 +40,8 @@ public class GUN : MonoBehaviour
     private InputAction aim;
     private InputAction fire;
     private InputAction reel;
+
+    private GameManager gameManager;
 
     private void OnEnable()
     {
@@ -63,6 +70,7 @@ public class GUN : MonoBehaviour
     {
         gunStartingPos = gun.transform.localPosition;
         gunStartingRot = gun.transform.localEulerAngles;
+        gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
     }
 
     private void Update()
@@ -91,43 +99,84 @@ public class GUN : MonoBehaviour
                 gun.transform.localEulerAngles = gunStartingRot;
             }
 
+            if (fish == null)
+            {
+                fishRespawnTimer -= Time.deltaTime * Math.Pow(2, gameManager.itemsLevel[2]).ConvertTo<float>();
+            }
+            if (fishRespawnTimer <= 0)
+            {
+                SpawnFish();
+                fishRespawnTimer = 8;
+            }
+
             caughtText.text = $"Fish Caught: {caught} ";
         }
 
         if (reeling)
         {
+            if (fish == null)
+            {
+                reeling = false;
+                return;
+            }
+            float strength = fish.GetComponent<FishBehavior>().sizeModifier / ((gameManager.itemsLevel[1] / 2) + 0.5f);
+
             gun.transform.localPosition = gunStartingPos;
             gun.transform.localEulerAngles = gunStartingRot;
+
             spearProjectile.transform.position = fish.transform.position;
+
             perIntervalReelPower += reel.ReadValue<float>();
             reelInterval -= Time.deltaTime;
-            if (perIntervalReelPower > reelingThreshold * fish.GetComponent<FishBehavior>().sizeModifier && reelButton == null)
+            reelButtonBuffer -= Time.deltaTime * strength;
+
+            if (reelButton == null) scrollGraphic.SetActive(true);
+            else if (reelButton != null) scrollGraphic.SetActive(false);
+
+            if (perIntervalReelPower > reelingThreshold * strength && reelButton == null)
                 reelSucceed = true;
-            float clickChance = fish.GetComponent<FishBehavior>().sizeModifier * baseButtonChance;
+
+            float clickChance = strength * baseButtonChance;
             for (int i = 0; i < reel.ReadValue<float>(); i++)
             {
-                if (Random.Range(0.00f, 100.00f) <= clickChance && reelButton == null)
+                if (UnityEngine.Random.Range(0.00f, 100.00f) <= clickChance && reelButton == null && reelButtonBuffer <= 0)
+                {
                     reelButton = Instantiate(reelButtonPrefab, GameObject.Find("Canvas").transform);
+                    reelButtonBuffer = 1.5f;
+                }
             }
+
             if (reelInterval <= 0)
             {
                 reelInterval = 0.25f;
                 perIntervalReelPower = 0;
                 if (reelSucceed == false)
                 {
-                    fish.GetComponent<FishBehavior>().reelModifier = -1 * fish.GetComponent<FishBehavior>().sizeModifier;
+                    fish.GetComponent<FishBehavior>().reelModifier = -1 * strength;
                 }
                 else if (reelSucceed == true)
                 {
-                    fish.GetComponent<FishBehavior>().reelModifier = 0.8f / fish.GetComponent<FishBehavior>().sizeModifier;
+                    fish.GetComponent<FishBehavior>().reelModifier = 0.8f / strength;
                     reelSucceed = false;
                 }
             }
+
             if (fish.transform.position.y >= 0.2f)
             {
                 catchFish();
                 reeling = false;
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                if (reelButton != null) Destroy(reelButton);
             }
+            //if (Vector3.Distance(fish.transform.position, transform.position) > 10)
+            //{
+            //    reeling = false;
+            //    Cursor.lockState = CursorLockMode.Locked;
+            //    Cursor.visible = false;
+            //    if (reelButton != null) Destroy(reelButton);
+            //    returning = true;
+            //}
         }
     }
     private void FixedUpdate()
@@ -159,12 +208,12 @@ public class GUN : MonoBehaviour
                 //Debug.Log("D");
             }
 
-            if (spearProjectile.GetComponent<SpearHitDetect>().hitFish) // If the spear hits the fish
+            if (spearProjectile.GetComponent<SpearHitDetect>().hitFish && !returning) // If the spear hits the fish
             {
                 HitFish();
                 //Debug.Log("E");
             }
-            else if (spearProjectile.GetComponent<SpearHitDetect>().hitOther) // If the spear hits something else
+            else if (spearProjectile.GetComponent<SpearHitDetect>().hitOther && !returning) // If the spear hits something else
             {
                 returning = true;
                 MissFish();
@@ -189,6 +238,8 @@ public class GUN : MonoBehaviour
     private void HitFish()
     {
         reeling = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         GameObject.FindWithTag("Fish").GetComponent<FishBehavior>().AILevel = 3;
     }
     private void MissFish()
@@ -200,9 +251,23 @@ public class GUN : MonoBehaviour
     {
         caught++;
         Destroy(fish);
-        fish = Instantiate(fishPrefab);
         Destroy(spearProjectile);
         spear.SetActive(true);
         returning = false;
+        scrollGraphic.SetActive(false);
+    }
+    void SpawnFish()
+    {
+        fish = Instantiate(fishPrefab);
+    }
+    public void BreakAwayFish()
+    {
+        reeling = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        if (reelButton != null) Destroy(reelButton);
+        spearProjectile.GetComponent<SpearHitDetect>().hitFish = false;
+        returning = true;
+        scrollGraphic.SetActive(false);
     }
 }
