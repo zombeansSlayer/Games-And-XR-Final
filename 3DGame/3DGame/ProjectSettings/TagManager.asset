@@ -10,11 +10,13 @@ TagManager:
   - InvisibleWall
   - Boat
   - Game Manager
+  - Register
+  - WheelBox
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Interactable
   - Water
   - UI
   - Fish

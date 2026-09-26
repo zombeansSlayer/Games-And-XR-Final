@@ -16,9 +16,20 @@ public class FishBehavior : MonoBehaviour
     private float moveTimer;
     private Vector3 floatingPosition;
 
+    private GameManager gameManager;
+
     private void Start()
     {
-        sizeModifier = (transform.localScale.x + transform.localScale.y + transform.localScale.z) / 45;
+        gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
+
+        if (gameManager.location == 1) sizeModifier = Random.Range(0.6f, 1f);
+        else if (gameManager.location == 2) sizeModifier = Random.Range(0.9f, 1.5f);
+        else if (gameManager.location == 3) sizeModifier = Random.Range(1.2f, 2.2f);
+        else if (gameManager.location == 4) sizeModifier = Random.Range(2f, 2.9f);
+        else if (gameManager.location == 5) sizeModifier = Random.Range(3f, 4f);
+
+        transform.localScale = new Vector3(sizeModifier * 15, sizeModifier * 15, sizeModifier * 15);
+        //sizeModifier = (transform.localScale.x + transform.localScale.y + transform.localScale.z) / 45;
 
         foreach (GameObject t in GameObject.FindGameObjectsWithTag("Bounds"))
         {
@@ -35,6 +46,9 @@ public class FishBehavior : MonoBehaviour
 
     private void Update()
     {
+        if (gameManager.paused)
+            return;
+
         moveTimer -= Time.deltaTime;
         if (moveTimer <= 0 && AILevel == 1 || gameObject.transform.position == floatingPosition && AILevel == 1)
         {

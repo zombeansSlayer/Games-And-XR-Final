@@ -1,16 +1,122 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using TMPro;
+using System.Collections.Generic;
+using System;
 
 public class PlayerMarketManagement : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public PlayerControls controls;
+    public Transform cameraTransform;
+    public TextMeshProUGUI interactText;
+    public GameObject interactGraphic;
+    public float maxInteractDistance;
+    public LayerMask interactableLayer;
+
+    public List<TextMeshProUGUI> upgradeCostText = new List<TextMeshProUGUI> { };
+
+    public List<TextMeshProUGUI> valueUI = new List<TextMeshProUGUI> { };
+
+    public CustomerSpawner customers;
+
+    private InputAction interact;
+
+    private GameManager gameManager;
+
+    private void OnEnable()
     {
-        
+        interact = controls.Player.Interact;
+        interact.Enable();
+    }
+    private void OnDisable()
+    {
+        interact.Disable();
     }
 
-    // Update is called once per frame
+    private void Awake()
+    {
+        controls = new PlayerControls();
+    }
+
+    private void Start()
+    {
+        gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
+
+        int i = 0;
+        foreach (var button in upgradeCostText)
+        {
+            button.text = $"${(Math.Pow(gameManager.itemsLevel[i] + 1, 2) * 100)}";
+            i++;
+        }
+
+        valueUI[0].text = $"${gameManager.totalCash}";
+        valueUI[1].text = $"Fish in Stock: {gameManager.fishInventory.Count}";
+    }
+
     void Update()
     {
-        
+        if (gameManager.paused)
+            return;
+
+        RaycastHit hit;
+        if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, maxInteractDistance, interactableLayer))
+        {
+            Interactable interactable = hit.collider.GetComponent<Interactable>();
+
+            if (interactable == null)
+            {
+                Debug.LogError($"{hit.collider.name} does not contain the Interactable script. Add the script or remove this item from the Interactable layer.");
+                return;
+            }
+
+            interactGraphic.SetActive(true);
+            if (interactText.text == "") 
+                interactText.text = interactable.interactableFlavorText;
+
+            if (interact.WasPressedThisFrame())
+            {
+                interactable.onInteract.Invoke();
+            }
+        }
+        else
+        {
+            interactGraphic.SetActive(false);
+            interactText.text = "";
+        }
+    }
+
+    public void RegisterInteract(string noCustomerText)
+    {
+        if (customers.customers.Count < 1)
+        {
+            interactText.text = noCustomerText;
+            return;
+        }
+
+        foreach (var fish in customers.customers[0].GetComponent<Customer>().fishBuying)
+        {
+            gameManager.totalCash += gameManager.moneyPerPound * fish;
+            gameManager.fishInventory.Remove(fish);
+        }
+
+        Destroy(customers.customers[0]);
+        customers.customers.RemoveAt(0);
+        customers.UpdateLine();
+    }
+
+    public void UpdateCostNumbers()
+    {
+        int i = 0;
+        foreach (var button in upgradeCostText)
+        {
+            button.text = $"${(Math.Pow(gameManager.itemsLevel[i] + 1, 2) * 100)}";
+            i++;
+        }
+    }
+
+    public void UpdateValueNumbers()
+    {
+        valueUI[0].text = $"${MathF.Round(gameManager.totalCash, 2)}";
+        valueUI[1].text = $"Fish in Stock: {gameManager.fishInventory.Count}";
     }
 }
