@@ -51,6 +51,7 @@ public class PlayerMovement : MonoBehaviour
     {
         gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
         gameManager.CursorLock(true);
+        gameManager.warned = false;
     }
     private void Update()
     {

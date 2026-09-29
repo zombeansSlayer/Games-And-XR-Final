@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public List<float> fishInventory = new List<float> { };
     public bool paused;
 
+    public bool warned = false;
     float dayClock;
     int day;
 
@@ -27,13 +28,21 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    void Start()
+    {
+        if (dayClock >= 600 && !warned)
+        {
+            clock.transform.parent.GetComponent<Animator>().SetTrigger("Night");
+            warned = true;
+        }
+    }
 
     void Update()
     {
         if (paused)
             return;
 
-            dayClock += Time.deltaTime;
+            dayClock += Time.deltaTime / 2;
             if (clock != null)
             {
                 if (dayClock < 240)
@@ -44,7 +53,13 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            if (dayClock >= 720)
+            if (dayClock >= 600 && !warned)
+        {
+            clock.transform.parent.GetComponent<Animator>().SetTrigger("Night");
+            warned = true;
+        }
+
+            if (dayClock >= 660)
             {
                 NewDay();
             }
@@ -54,8 +69,8 @@ public class GameManager : MonoBehaviour
     {
         if (totalCash >= Math.Pow(itemsLevel[itemToUpgrade] + 1, 2) * 100)
         {
-            itemsLevel[itemToUpgrade]++;
             totalCash -= (Math.Pow(itemsLevel[itemToUpgrade] + 1, 2) * 100).ConvertTo<float>();
+            itemsLevel[itemToUpgrade]++;
         }
 
     }
@@ -65,6 +80,7 @@ public class GameManager : MonoBehaviour
         dayClock = 0;
         day++;
         SceneManager.LoadScene("Market");
+        warned = false;
     }
     public void FastTravel(bool goingOut)
     {

@@ -42,15 +42,8 @@ public class PlayerMarketManagement : MonoBehaviour
     {
         gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
 
-        int i = 0;
-        foreach (var button in upgradeCostText)
-        {
-            button.text = $"${(Math.Pow(gameManager.itemsLevel[i] + 1, 2) * 100)}";
-            i++;
-        }
-
-        valueUI[0].text = $"${gameManager.totalCash}";
-        valueUI[1].text = $"Fish in Stock: {gameManager.fishInventory.Count}";
+        UpdateCostNumbers();
+        UpdateValueNumbers();
     }
 
     void Update()
@@ -116,7 +109,15 @@ public class PlayerMarketManagement : MonoBehaviour
 
     public void UpdateValueNumbers()
     {
-        valueUI[0].text = $"${MathF.Round(gameManager.totalCash, 2)}";
-        valueUI[1].text = $"Fish in Stock: {gameManager.fishInventory.Count}";
+        valueUI[0].text = $"${MathF.Round(gameManager.totalCash)}.{((int)(gameManager.totalCash * 100) % 100):D2}";
+
+        int totalFish = gameManager.fishInventory.Count;
+        foreach (var customer in customers.customers)
+        {
+            foreach (var fish in customer.GetComponent<Customer>().fishBuying) {
+                totalFish++;
+            }
+        }
+        valueUI[1].text = $"Fish in Stock: {totalFish}";
     }
 }

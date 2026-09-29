@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using Unity.VisualScripting;
+using TMPro;
 
 public class Customer : MonoBehaviour
 {
@@ -25,18 +26,15 @@ public class Customer : MonoBehaviour
 
         TakeFish();
 
-        float extraFishChance = 0;
-        if (gameManager.itemsLevel[0] != 0)
-            extraFishChance = ((1 - Math.Pow(gameManager.itemsLevel[0], -1).ConvertTo<float>()) / 2) + 0.5f;
-        else
-            extraFishChance = 0.5f;
         for (int i = 0; i < gameManager.itemsLevel[0] + 1; i++)
         {
             if (gameManager.fishInventory.Count < 1)
                 break;
-            if (UnityEngine.Random.Range(0.0000f, 1.0000f) <= extraFishChance)
+            if (UnityEngine.Random.Range(1, 101) <= 20)
                 TakeFish();
         }
+
+        transform.GetChild(0).GetComponent<TextMeshPro>().text = $"{fishBuying.Count}";
     }
 
     private void TakeFish()

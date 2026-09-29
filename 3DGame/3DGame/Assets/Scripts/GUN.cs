@@ -158,7 +158,7 @@ public class GUN : MonoBehaviour
 
             if (reelInterval <= 0)
             {
-                reelInterval = 0.25f;
+                reelInterval = 0.75f;
                 perIntervalReelPower = 0;
                 if (reelSucceed == false)
                 {
@@ -174,6 +174,8 @@ public class GUN : MonoBehaviour
             if (fish.transform.position.y >= 0.2f)
             {
                 catchFish();
+                reelInterval = 0;
+                reelSucceed = false;
                 reeling = false;
                 gameManager.CursorLock(true);
                 if (reelButton != null) Destroy(reelButton);
