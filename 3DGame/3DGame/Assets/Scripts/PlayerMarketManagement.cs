@@ -15,6 +15,8 @@ public class PlayerMarketManagement : MonoBehaviour
 
     public List<TextMeshProUGUI> upgradeCostText = new List<TextMeshProUGUI> { };
 
+    public List<TextMeshProUGUI> levelText = new List<TextMeshProUGUI> { };
+
     public List<TextMeshProUGUI> valueUI = new List<TextMeshProUGUI> { };
 
     public CustomerSpawner customers;
@@ -102,8 +104,14 @@ public class PlayerMarketManagement : MonoBehaviour
         int i = 0;
         foreach (var button in upgradeCostText)
         {
-            button.text = $"${(Math.Pow(gameManager.itemsLevel[i] + 1, 2) * 100)}";
+            button.text = $"${(Math.Pow(gameManager.itemsLevel[i] + 1, 2) * 50)}";
             i++;
+        }
+        int j = 0;
+        foreach (var level in levelText)
+        {
+            level.text = $"{gameManager.itemsLevel[j] + 1}";
+            j++;
         }
     }
 

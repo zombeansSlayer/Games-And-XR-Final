@@ -22,11 +22,24 @@ public class FishBehavior : MonoBehaviour
     {
         gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
 
-        if (gameManager.location == 1) sizeModifier = Random.Range(0.6f, 1f);
-        else if (gameManager.location == 2) sizeModifier = Random.Range(0.9f, 1.5f);
-        else if (gameManager.location == 3) sizeModifier = Random.Range(1.2f, 2.2f);
-        else if (gameManager.location == 4) sizeModifier = Random.Range(2f, 2.9f);
-        else if (gameManager.location == 5) sizeModifier = Random.Range(3f, 4f);
+        List<float> sizes = new List<float> { };
+
+        for (int i = 0; i < gameManager.itemsLevel[2] + 1; i++)
+        {
+            if (gameManager.location == 1) sizes.Add(Random.Range(0.6f, 1f));
+            else if (gameManager.location == 2) sizes.Add(Random.Range(0.9f, 1.5f));
+            else if (gameManager.location == 3) sizes.Add(Random.Range(1.2f, 2.2f));
+            else if (gameManager.location == 4) sizes.Add(Random.Range(2f, 2.9f));
+            else if (gameManager.location == 5) sizes.Add(Random.Range(3f, 4f));
+        }
+        float currentBiggest = 0;
+        foreach (float size in sizes)
+        {
+            if (size > currentBiggest)
+                currentBiggest = size;
+        }
+
+        sizeModifier = currentBiggest;
 
         transform.localScale = new Vector3(sizeModifier * 15, sizeModifier * 15, sizeModifier * 15);
         //sizeModifier = (transform.localScale.x + transform.localScale.y + transform.localScale.z) / 45;
@@ -67,7 +80,8 @@ public class FishBehavior : MonoBehaviour
         }
         else if (AILevel == 3)
         {
-            floatingPosition = GameObject.FindWithTag("Player").transform.position;
+            Vector3 playerDir = GameObject.FindWithTag("Player").transform.position;
+            floatingPosition = new Vector3(playerDir.x, playerDir.y - 0.6f, playerDir.z);
         }
         else if (gameObject.transform.position == floatingPosition && AILevel == 0)
         {

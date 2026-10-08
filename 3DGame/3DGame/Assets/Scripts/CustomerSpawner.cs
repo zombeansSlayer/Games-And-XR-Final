@@ -26,7 +26,7 @@ public class CustomerSpawner : MonoBehaviour
         if (gameManager.paused)
             return;
 
-        customerSpawnCooldown -= Time.deltaTime * (Math.Pow(2, gameManager.itemsLevel[0]).ConvertTo<float>());
+        customerSpawnCooldown -= Time.deltaTime * (((Math.Pow(2, gameManager.itemsLevel[0]).ConvertTo<float>() - 1) / 2) + 1);
         if (customerSpawnCooldown <= 0 && gameManager.fishInventory.Count > 0)
         {
             SpawnCustomer();

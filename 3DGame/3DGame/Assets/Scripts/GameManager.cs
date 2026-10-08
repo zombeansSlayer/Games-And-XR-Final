@@ -67,9 +67,9 @@ public class GameManager : MonoBehaviour
 
     public void Upgrade(int itemToUpgrade)
     {
-        if (totalCash >= Math.Pow(itemsLevel[itemToUpgrade] + 1, 2) * 100)
+        if (totalCash >= Math.Pow(itemsLevel[itemToUpgrade] + 1, 2) * 50)
         {
-            totalCash -= (Math.Pow(itemsLevel[itemToUpgrade] + 1, 2) * 100).ConvertTo<float>();
+            totalCash -= (Math.Pow(itemsLevel[itemToUpgrade] + 1, 2) * 50).ConvertTo<float>();
             itemsLevel[itemToUpgrade]++;
         }
 
@@ -98,7 +98,8 @@ public class GameManager : MonoBehaviour
         else if (!goingOut)
             SceneManager.LoadScene("Market");
 
-        dayClock += (60 / (itemsLevel[3] + 1));
+        if (itemsLevel[3] < 5)
+            dayClock += (10 - (itemsLevel[3] * 2)) * location;
     }
 
     public void setLocation(int fishingLocation)
