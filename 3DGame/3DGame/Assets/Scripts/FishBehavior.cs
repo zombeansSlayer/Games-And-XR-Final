@@ -15,6 +15,7 @@ public class FishBehavior : MonoBehaviour
     private int patience;
     private float moveTimer;
     private Vector3 floatingPosition;
+    private Vector3 floatingPosition2;
 
     private GameManager gameManager;
 
@@ -52,7 +53,8 @@ public class FishBehavior : MonoBehaviour
         AILevel = 0;
         FishBox = FishAreaBounds[Random.Range(0, FishAreaBounds.Count)];
         gameObject.transform.position = new Vector3(Random.Range(FishBox[0].position.x, FishBox[1].position.x), -0.8f, Random.Range(FishBox[0].position.z, FishBox[1].position.z));
-        floatingPosition = gameObject.transform.position;
+        floatingPosition2 = new Vector3(Random.Range(FishBox[0].position.x, FishBox[1].position.x), -0.8f, Random.Range(FishBox[0].position.z, FishBox[1].position.z));
+        floatingPosition = floatingPosition2;
         moveTimer = 0;
         patience = Random.Range(5, 8);
     }
@@ -63,16 +65,16 @@ public class FishBehavior : MonoBehaviour
             return;
 
         moveTimer -= Time.deltaTime;
-        if (moveTimer <= 0 && AILevel == 1 || gameObject.transform.position == floatingPosition && AILevel == 1)
+        if (moveTimer <= 0 && AILevel == 1 || floatingPosition2 == floatingPosition && AILevel == 1)
         {
             moveTimer = Random.Range(0.5f, 1.5f);
-            floatingPosition = new Vector3(Random.Range(FishBox[0].position.x, FishBox[1].position.x), -0.8f, Random.Range(FishBox[0].position.z, FishBox[1].position.z));
+            floatingPosition2 = new Vector3(Random.Range(FishBox[0].position.x, FishBox[1].position.x), -0.8f, Random.Range(FishBox[0].position.z, FishBox[1].position.z));
             if (patience <= 0) AILevel = 2;
             patience--;
         }
         else if (AILevel == 2)
         {
-            floatingPosition = new Vector3(0, -10, 0);
+            floatingPosition2 = new Vector3(0, -10, 0);
             if (moveTimer <= 0)
             {
                 Destroy(gameObject);
@@ -83,17 +85,34 @@ public class FishBehavior : MonoBehaviour
             Vector3 playerDir = GameObject.FindWithTag("Player").transform.position;
             floatingPosition = new Vector3(playerDir.x, playerDir.y - 0.6f, playerDir.z);
         }
-        else if (gameObject.transform.position == floatingPosition && AILevel == 0)
+        else if (floatingPosition2 == floatingPosition && AILevel == 0)
         {
             moveTimer = Random.Range(0.5f, 2f);
-            floatingPosition = new Vector3(Random.Range(FishBox[0].position.x, FishBox[1].position.x), -0.8f, Random.Range(FishBox[0].position.z, FishBox[1].position.z));
+            floatingPosition2 = new Vector3(Random.Range(FishBox[0].position.x, FishBox[1].position.x), -0.8f, Random.Range(FishBox[0].position.z, FishBox[1].position.z));
         }
+
+        float nearModifier = 1;
+
+        if (Vector3.Distance(gameObject.transform.position, floatingPosition) < 1 && AILevel != 3)
+            nearModifier = Vector3.Distance(gameObject.transform.position, floatingPosition);
+        else if (transform.position.y >= -0.4f && AILevel == 3)
+            nearModifier = -transform.position.y + 0.6f;
+
         if (AILevel == 1 || AILevel == 2)
-            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, floatingPosition, flyingSpeed * angryModifier * Time.deltaTime);
+        {
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, floatingPosition, flyingSpeed * angryModifier * Time.deltaTime * sizeModifier * nearModifier);
+            floatingPosition = Vector3.MoveTowards(floatingPosition, floatingPosition2, flyingSpeed * angryModifier * Time.deltaTime * sizeModifier);
+        }
+
         else if (AILevel == 3)
-            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, floatingPosition, reelModifier * Time.deltaTime);
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, floatingPosition, reelModifier * Time.deltaTime * nearModifier);
+
         else if (AILevel == 0)
-            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, floatingPosition, flyingSpeed * sizeModifier * Time.deltaTime);
+        {
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, floatingPosition, flyingSpeed * sizeModifier * Time.deltaTime * nearModifier);
+            floatingPosition = Vector3.MoveTowards(floatingPosition, floatingPosition2, flyingSpeed * sizeModifier * Time.deltaTime);
+        }
+
         if (AILevel == 3 && Vector3.Distance(transform.position, floatingPosition) > 10)
         {
             AILevel = 2;

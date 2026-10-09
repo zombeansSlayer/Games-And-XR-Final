@@ -12,6 +12,7 @@ TagManager:
   - Game Manager
   - Register
   - WheelBox
+  - Audio Manager
   layers:
   - Default
   - TransparentFX

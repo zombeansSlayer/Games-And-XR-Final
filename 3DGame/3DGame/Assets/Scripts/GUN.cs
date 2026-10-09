@@ -26,13 +26,16 @@ public class GUN : MonoBehaviour
     Vector3 gunStartingRot;
 
     public int reelingThreshold;
-    private float aiming;
+    private bool aiming;
     private float reelTimer;
     private float reelButtonBuffer = 1;
     private float fishRespawnTimer = 8;
     public float shotSpeed;
     public bool atWheel = false;
     public bool reeling;
+    public float FOVVariable;
+    private float zoomVariable;
+    private bool usingController;
     bool returning = false;
     GameObject spearProjectile;
     Rigidbody spearRigidbody;
@@ -46,9 +49,21 @@ public class GUN : MonoBehaviour
 
     private void OnEnable()
     {
-        aim = controls.Player.Aim;
-        fire = controls.Player.Fire;
-        reel = controls.Player.Reel;
+        usingController = Gamepad.current != null;
+
+        if (usingController)
+        {
+            aim = controls.PlayerCT.Aim;
+            fire = controls.PlayerCT.Fire;
+            reel = controls.PlayerCT.Reel;
+        }
+        else if (!usingController)
+        {
+            aim = controls.PlayerKB.Aim;
+            fire = controls.PlayerKB.Fire;
+            reel = controls.PlayerKB.Reel;
+        }
+        InputSystem.onDeviceChange += OnDeviceChanged;
 
         aim.Enable();
         fire.Enable();
@@ -57,6 +72,8 @@ public class GUN : MonoBehaviour
 
     private void OnDisable()
     {
+        InputSystem.onDeviceChange -= OnDeviceChanged;
+
         aim.Disable();
         fire.Disable();
         reel.Disable();
@@ -72,6 +89,11 @@ public class GUN : MonoBehaviour
         gunStartingPos = gun.transform.localPosition;
         gunStartingRot = gun.transform.localEulerAngles;
         gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
+
+        if (mainCam == null)
+            mainCam = Camera.current.gameObject;
+
+        zoomVariable = FOVVariable - 20;
     }
 
     private void Update()
@@ -79,33 +101,39 @@ public class GUN : MonoBehaviour
         if (gameManager.paused)
             return;
 
+        Camera cam = mainCam.GetComponent<Camera>();
+
         if (!reeling)
         {
-            aiming = aim.ReadValue<float>();
-            if (aiming == 1 && fire.WasPressedThisFrame() && spearProjectile == null)
+            aiming = aim.ReadValue<float>() > 0;
+            if (aiming && fire.WasPressedThisFrame() && spearProjectile == null)
             {
                 ShootGun();
             }
-            if (aiming != 1 && fire.WasPressedThisFrame() == true && !atWheel)
+            if (!aiming && fire.WasPressedThisFrame() == true && !atWheel)
             {
                 rightClickGraphic.SetActive(true);
             }
-            else if (aiming != 1 && fire.WasPressedThisFrame() == true && atWheel)
+            else if (!aiming && fire.WasPressedThisFrame() == true && atWheel)
             {
                 exitToMarketConfirm.SetActive(true);
                 gameManager.CursorLock(false);
             }
 
-            if (aiming == 1 && spearProjectile == null)
+            if (aiming && spearProjectile == null)
             {
                 gun.transform.localPosition = new Vector3(0, -0.43f, 0.54f);
                 gun.transform.localEulerAngles = new Vector3(0, 180, 0);
                 rightClickGraphic.SetActive(false);
+
+                cam.fieldOfView = Mathf.Clamp(cam.fieldOfView - 30 * Time.deltaTime, zoomVariable, FOVVariable);
             }
-            else if (aiming == 0 || spearProjectile != null)
+            else if (!aiming || spearProjectile != null)
             {
                 gun.transform.localPosition = gunStartingPos;
                 gun.transform.localEulerAngles = gunStartingRot;
+
+                cam.fieldOfView = Mathf.Clamp(cam.fieldOfView + 30 * Time.deltaTime, zoomVariable, FOVVariable);
             }
 
             if (fish == null)
@@ -121,6 +149,7 @@ public class GUN : MonoBehaviour
             }
 
             caughtText.text = $"Caught: {caught} ";
+
         }
 
         if (reeling)
@@ -269,6 +298,48 @@ public class GUN : MonoBehaviour
                 reelTimer = -0.5f;
                 reelButtonBuffer = 3 * strength;
             }
+        }
+    }
+    private void ChangeInputType(bool usingController)
+    {
+        if (usingController)
+        {
+            aim = controls.PlayerCT.Aim;
+            fire = controls.PlayerCT.Fire;
+            reel = controls.PlayerCT.Reel;
+        }
+        else if (!usingController)
+        {
+            aim = controls.PlayerKB.Aim;
+            fire = controls.PlayerKB.Fire;
+            reel = controls.PlayerKB.Reel;
+        }
+    }
+
+    private void OnDeviceChanged(InputDevice device, InputDeviceChange change)
+    {
+        if (device is Gamepad)
+        {
+            switch (change)
+            {
+                case InputDeviceChange.Disconnected:
+                    Debug.Log("Controller Disconnected. Using keyboard input...");
+                    usingController = false;
+                    break;
+                case InputDeviceChange.Reconnected:
+                    Debug.Log("Controller Reconnected. Using controller input...");
+                    usingController = true;
+                    break;
+                case InputDeviceChange.Added:
+                    Debug.Log("Controller Added. Using controller input...");
+                    usingController = true;
+                    break;
+                case InputDeviceChange.Removed:
+                    Debug.Log("Controller Removed. Using keyboard input...");
+                    usingController = false;
+                    break;
+            }
+            ChangeInputType(usingController);
         }
     }
 

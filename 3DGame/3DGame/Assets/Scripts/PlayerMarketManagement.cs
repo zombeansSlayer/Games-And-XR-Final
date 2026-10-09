@@ -22,16 +22,23 @@ public class PlayerMarketManagement : MonoBehaviour
     public CustomerSpawner customers;
 
     private InputAction interact;
+    private bool usingController;
 
     private GameManager gameManager;
 
     private void OnEnable()
     {
-        interact = controls.Player.Interact;
+        usingController = Gamepad.current != null;
+
+        ChangeInputType(usingController);
+        InputSystem.onDeviceChange += OnDeviceChanged;
+
         interact.Enable();
     }
     private void OnDisable()
     {
+        InputSystem.onDeviceChange -= OnDeviceChanged;
+
         interact.Disable();
     }
 
@@ -127,5 +134,38 @@ public class PlayerMarketManagement : MonoBehaviour
             }
         }
         valueUI[1].text = $"Fish in Stock: {totalFish}";
+    }
+    private void ChangeInputType(bool usingController)
+    {
+        if (usingController)
+            interact = controls.PlayerCT.Interact;
+        else if (!usingController)
+            interact = controls.PlayerKB.Interact;
+    }
+    private void OnDeviceChanged(InputDevice device, InputDeviceChange change)
+    {
+        if (device is Gamepad)
+        {
+            switch (change)
+            {
+                case InputDeviceChange.Disconnected:
+                    Debug.Log("Controller Disconnected. Using keyboard input...");
+                    usingController = false;
+                    break;
+                case InputDeviceChange.Reconnected:
+                    Debug.Log("Controller Reconnected. Using controller input...");
+                    usingController = true;
+                    break;
+                case InputDeviceChange.Added:
+                    Debug.Log("Controller Added. Using controller input...");
+                    usingController = true;
+                    break;
+                case InputDeviceChange.Removed:
+                    Debug.Log("Controller Removed. Using keyboard input...");
+                    usingController = false;
+                    break;
+            }
+            ChangeInputType(usingController);
+        }
     }
 }
