@@ -81,7 +81,7 @@ public class PlayerMovement : MonoBehaviour
             else
                 lookDirection = look.ReadValue<Vector2>();
 
-                mouse.x += lookDirection.x * Time.deltaTime * lookSpeed;
+            mouse.x += lookDirection.x * Time.deltaTime * lookSpeed;
             mouse.y += lookDirection.y * Time.deltaTime * lookSpeed;
             mouse.y = Mathf.Clamp(mouse.y, -90, 90);
 
