@@ -46,6 +46,7 @@ public class GUN : MonoBehaviour
     private InputAction reel;
 
     private GameManager gameManager;
+    private AudioManager audioManager;
 
     private void OnEnable()
     {
@@ -89,6 +90,7 @@ public class GUN : MonoBehaviour
         gunStartingPos = gun.transform.localPosition;
         gunStartingRot = gun.transform.localEulerAngles;
         gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
+        audioManager = GameObject.FindWithTag("Audio Manager").GetComponent<AudioManager>();
 
         if (mainCam == null)
             mainCam = Camera.current.gameObject;
@@ -106,6 +108,7 @@ public class GUN : MonoBehaviour
         if (!reeling)
         {
             aiming = aim.ReadValue<float>() > 0;
+
             if (aiming && fire.WasPressedThisFrame() && spearProjectile == null)
             {
                 ShootGun();
@@ -122,6 +125,8 @@ public class GUN : MonoBehaviour
 
             if (aiming && spearProjectile == null)
             {
+                audioManager.scoping = true;
+
                 gun.transform.localPosition = new Vector3(0, -0.43f, 0.54f);
                 gun.transform.localEulerAngles = new Vector3(0, 180, 0);
                 rightClickGraphic.SetActive(false);
@@ -130,6 +135,8 @@ public class GUN : MonoBehaviour
             }
             else if (!aiming || spearProjectile != null)
             {
+                audioManager.scoping = false;
+
                 gun.transform.localPosition = gunStartingPos;
                 gun.transform.localEulerAngles = gunStartingRot;
 
@@ -174,6 +181,7 @@ public class GUN : MonoBehaviour
             spearProjectile.transform.position = fish.transform.position;
 
             //perIntervalReelPower += reel.ReadValue<float>();
+            float lastFrameReelTimer = reelTimer;
             reelTimer -= Time.deltaTime;
 
             if (reelButton.Count == 0)
@@ -185,6 +193,10 @@ public class GUN : MonoBehaviour
             if (reel.ReadValue<float>() > 0 && reelButton.Count == 0 && reelTimer > 0 
                 || reel.ReadValue<float>() > 0 && reelButton.Count == 0 && reelTimer < -0.75f)
             {
+                if (reelTimer < -0.75f)
+                {
+                    audioManager.PlayAudio(9);
+                }
                 reelTimer = 0.3f;
             }
 
@@ -195,6 +207,12 @@ public class GUN : MonoBehaviour
             else if (reelTimer <= 0)
             {
                 fish.GetComponent<FishBehavior>().reelModifier = -3 * strength;
+                if (lastFrameReelTimer > 0)
+                {
+                    audioManager.PauseAudio(9);
+                    audioManager.PlayAudio(10);
+                    audioManager.PlayAudio(11);
+                }
             }
             else if (reelTimer > 0)
             {
@@ -204,6 +222,9 @@ public class GUN : MonoBehaviour
             if (fish.transform.position.y >= 0.2f)
             {
                 catchFish();
+
+                audioManager.StopAudio(9);
+
                 reelTimer = 0;
                 reeling = false;
                 gameManager.CursorLock(true);
@@ -272,6 +293,8 @@ public class GUN : MonoBehaviour
 
             else if (spearProjectile.GetComponent<SpearHitDetect>().hitOther && !returning) // If the spear hits something else
             {
+                audioManager.PlayAudio(5);
+
                 returning = true;
                 MissFish();
                 //Debug.Log("F");
@@ -291,6 +314,10 @@ public class GUN : MonoBehaviour
 
             if (UnityEngine.Random.Range(0, 100) <= clickChance && reelButton.Count == 0 && reelButtonBuffer <= 0)
             {
+                audioManager.PauseAudio(9);
+                audioManager.PlayAudio(10);
+                audioManager.PlayAudio(11);
+
                 for (int i = 0; i < UnityEngine.Random.Range(2, 5); i++)
                 {
                     reelButton.Add(Instantiate(reelButtonPrefab, GameObject.Find("ReelButtonLayer").transform));
@@ -345,6 +372,9 @@ public class GUN : MonoBehaviour
 
     void ShootGun()
     {
+        audioManager.PlayAudio(3);
+        audioManager.PlayAudio(4);
+
         spear.SetActive(false);
 
         spearProjectile = Instantiate(spearPrefab, spearBasePos.position, 
@@ -354,6 +384,10 @@ public class GUN : MonoBehaviour
     }
     private void HitFish()
     {
+        audioManager.PlayAudio(6);
+        audioManager.PlayAudio(7); // SIX SEVEN
+        audioManager.PlayAudio(8);
+
         if (Vector3.Distance(transform.position, fish.transform.position) < 5)
             reelTimer = 0;
         reeling = true;
