@@ -3,6 +3,7 @@ using UnityEngine.Audio;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using UnityEngine.Playables;
 
 public class AudioManager : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class AudioManager : MonoBehaviour
     public float soundsVolume;
 
     [SerializeField] private AudioMixerGroup masterMixerGroup;
+
+    [SerializeField] private PlayableDirector waveCrashTimeline;
 
     private bool fadingOut;
     public bool scoping;
@@ -65,6 +68,9 @@ public class AudioManager : MonoBehaviour
             int chosenSound = Random.Range(0, 3);
             PlayAudio(chosenSound);
             ambientNoiseTimer = Random.Range(20.0f, 60.0f);
+
+            if (chosenSound == 2)
+                waveCrashTimeline.Play();
         }
     }
 
@@ -75,6 +81,12 @@ public class AudioManager : MonoBehaviour
 
     public void PlayAudio(int i)
     {
+        if (sounds[i] == null)
+        {
+            Debug.Log($"The sound at index {i} doesn't exist. Please add the sound.");
+            return;
+        }
+
         sounds[i].volume = Random.Range(ogVolume[i] * 0.8f, ogVolume[i]);
         sounds[i].pitch = Random.Range(ogPitch[i] * 0.8f, ogPitch[i]);
 
