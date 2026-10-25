@@ -3861,6 +3861,57 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 250800740}
   m_CullTransparentMesh: 1
+--- !u!1 &262379764
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 262379766}
+  - component: {fileID: 262379765}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Audio Manager
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &262379765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 262379764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0196ea6062be6b469aed964b83a768a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds: []
+  masterVolume: 0
+  ambienceVolume: 0
+  soundsVolume: 0
+  masterMixerGroup: {fileID: 0}
+  waveCrashTimeline: {fileID: 0}
+  scoping: 0
+--- !u!4 &262379766
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 262379764}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.30266, y: 0.2, z: 0.8201}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &272159245
 GameObject:
   m_ObjectHideFlags: 0
@@ -4228,7 +4279,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.68235296}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -11313,7 +11364,7 @@ MonoBehaviour:
   rb: {fileID: 1387180324}
   moveSpeed: 8
   accel: 50
-  lookSpeed: 80
+  lookSpeed: 0.25
   gun: {fileID: 0}
 --- !u!54 &1387180324
 Rigidbody:
@@ -17906,3 +17957,4 @@ SceneRoots:
   - {fileID: 2008216213}
   - {fileID: 1657633701}
   - {fileID: 459931955}
+  - {fileID: 262379766}

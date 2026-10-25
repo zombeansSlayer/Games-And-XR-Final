@@ -62,7 +62,10 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
-        audioManager = GameObject.FindWithTag("Audio Manager").GetComponent<AudioManager>();
+        if (GameObject.FindWithTag("Audio Manager") != null) 
+        { 
+            audioManager = GameObject.FindWithTag("Audio Manager").GetComponent<AudioManager>();
+        }
         gameManager.CursorLock(true);
         gameManager.warned = false;
     }
@@ -81,8 +84,8 @@ public class PlayerMovement : MonoBehaviour
             else
                 lookDirection = look.ReadValue<Vector2>();
 
-            mouse.x += lookDirection.x * Time.deltaTime * lookSpeed;
-            mouse.y += lookDirection.y * Time.deltaTime * lookSpeed;
+            mouse.x += lookDirection.x * lookSpeed;
+            mouse.y += lookDirection.y * lookSpeed;
             mouse.y = Mathf.Clamp(mouse.y, -90, 90);
 
             transform.rotation = Quaternion.Euler(0, mouse.x, 0);
@@ -100,7 +103,8 @@ public class PlayerMovement : MonoBehaviour
             pauseMenu.SetActive(paused);
             if (!hadMouseWhenPaused) gameManager.CursorLock(true);
 
-            audioManager.EnableOrDisableAudio(true);
+            if (audioManager != null) 
+                audioManager.EnableOrDisableAudio(true);
         }
         else if (pause.WasPressedThisFrame() && !paused) // Pause
         {
@@ -115,7 +119,8 @@ public class PlayerMovement : MonoBehaviour
 
             gameManager.CursorLock(false);
 
-            audioManager.EnableOrDisableAudio(false);
+            if (audioManager != null)
+                audioManager.EnableOrDisableAudio(false);
         }
 
         if (usingController)

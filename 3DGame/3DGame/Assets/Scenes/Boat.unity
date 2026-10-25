@@ -4115,7 +4115,7 @@ MonoBehaviour:
   rb: {fileID: 704411672}
   moveSpeed: 8
   accel: 50
-  lookSpeed: 80
+  lookSpeed: 0.25
   gun: {fileID: 8943206342757544858}
 --- !u!136 &704411674
 CapsuleCollider:
@@ -4316,7 +4316,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 9106fb65dbc447b4991a28b689ce3eb1, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.805
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -4413,7 +4413,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 1300134fc27ebc24fb6b40cdbee7b80f, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.7
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -4607,7 +4607,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 3690c382fb8f34d4d95380d0787b89e2, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.7
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -7615,7 +7615,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.70980394}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

@@ -28,10 +28,10 @@ public class FishBehavior : MonoBehaviour
         for (int i = 0; i < gameManager.itemsLevel[2] + 1; i++)
         {
             if (gameManager.location == 1) sizes.Add(Random.Range(0.6f, 1f));
-            else if (gameManager.location == 2) sizes.Add(Random.Range(0.9f, 1.5f));
-            else if (gameManager.location == 3) sizes.Add(Random.Range(1.2f, 2.2f));
+            else if (gameManager.location == 2) sizes.Add(Random.Range(0.9f, 1.2f));
+            else if (gameManager.location == 3) sizes.Add(Random.Range(1.2f, 2f));
             else if (gameManager.location == 4) sizes.Add(Random.Range(2f, 2.9f));
-            else if (gameManager.location == 5) sizes.Add(Random.Range(3f, 4f));
+            else if (gameManager.location == 5) sizes.Add(Random.Range(2.9f, 3.5f));
         }
         float currentBiggest = 0;
         foreach (float size in sizes)

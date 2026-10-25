@@ -173,7 +173,7 @@ public class GUN : MonoBehaviour
                     reelButton.RemoveAt(i);
                 }
             }
-            float strength = fish.GetComponent<FishBehavior>().sizeModifier / ((gameManager.itemsLevel[1] / 3) + 1f);
+            float strength = fish.GetComponent<FishBehavior>().sizeModifier / ((gameManager.itemsLevel[1] / 1.5f) + 1f);
 
             gun.transform.localPosition = gunStartingPos;
             gun.transform.localEulerAngles = gunStartingRot;
@@ -393,6 +393,8 @@ public class GUN : MonoBehaviour
         reeling = true;
         gameManager.CursorLock(false);
         fish.GetComponent<FishBehavior>().AILevel = 3;
+
+        reelButtonBuffer = 3;
     }
     private void MissFish()
     {
