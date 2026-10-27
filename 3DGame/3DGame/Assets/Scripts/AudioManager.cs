@@ -16,16 +16,19 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] private AudioMixerGroup masterMixerGroup;
 
-    [SerializeField] private PlayableDirector waveCrashTimeline;
+    [SerializeField] private Animator waveCrashAnimator;
 
     private bool fadingOut;
+    private GameManager gameManager;
     public bool scoping;
 
     private float ambientNoiseTimer;
 
     private void Start()
     {
-        ambientNoiseTimer = Random.Range(20.0f, 60.0f);
+        gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
+
+        ambientNoiseTimer = 4;// Random.Range(20.0f, 60.0f);
 
         sounds = gameObject.GetComponents<AudioSource>().ToList();
         sounds.Remove(sounds[0]); // The first sound on the AudioManager should be the constant ambient noise
@@ -61,7 +64,8 @@ public class AudioManager : MonoBehaviour
         if (sounds.Count < 3)
             return;
 
-        ambientNoiseTimer -= Time.deltaTime;
+        if (!Cursor.visible)
+            ambientNoiseTimer -= Time.deltaTime;
 
         if (ambientNoiseTimer <= 0.0f)
         {
@@ -69,8 +73,8 @@ public class AudioManager : MonoBehaviour
             PlayAudio(chosenSound);
             ambientNoiseTimer = Random.Range(20.0f, 60.0f);
 
-            if (chosenSound == 2)
-                waveCrashTimeline.Play();
+            //if (chosenSound == 0)
+                waveCrashAnimator.SetTrigger("Splash");
         }
     }
 

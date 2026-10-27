@@ -29,10 +29,10 @@ ScriptedImporter:
     importPoints: 0
     importCurves: 1
     createCurveRenderers: 0
-  abcStartTime: 1.25
-  abcEndTime: 2.5
-  startTime: 1.25
-  endTime: 2.5
+  abcStartTime: 0.8333333333333333
+  abcEndTime: 2.916666666666667
+  startTime: 0.8333333333333333
+  endTime: 2.916666666666667
   importWarning: 
   firstImport: 0
   isHDF5: 0
