@@ -600,8 +600,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66102ce82ee251f449ec61d371388a44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flyingSpeed: 2
-  angryModifier: 3
+  flyingSpeed: 3
+  angryModifier: 4
   reelModifier: 0
   sizeModifier: 0
   AILevel: 0

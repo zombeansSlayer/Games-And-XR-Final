@@ -78,7 +78,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Wave Crash_Time
+  m_Name: Splash
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -92,7 +92,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -1638789572408541109, guid: 8757fa53698544249a09de3708135568, type: 3}
+  m_Motion: {fileID: 7400000, guid: ad886d48cbdeb2644b6bc75fe95a4f4c, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

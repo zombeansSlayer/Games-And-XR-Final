@@ -15,9 +15,13 @@ public class GUN : MonoBehaviour
     public GameObject fishPrefab;
     public GameObject spearPrefab;
     public GameObject reelButtonPrefab;
+    public GameObject rippleSpawnerPrefab;
+
     public GameObject rightClickGraphic;
     public GameObject scrollGraphic;
     public GameObject exitToMarketConfirm;
+    private GameObject rippleSpawner;
+
     public Transform spearBasePos;
     public TextMeshProUGUI caughtText;
     public float baseButtonChance;
@@ -385,8 +389,10 @@ public class GUN : MonoBehaviour
     private void HitFish()
     {
         audioManager.PlayAudio(6);
-        audioManager.PlayAudio(7); // SIX SEVEN
+        audioManager.PlayAudio(7); // SIC SEBEN
         audioManager.PlayAudio(8);
+
+        rippleSpawner = Instantiate(rippleSpawnerPrefab);
 
         if (Vector3.Distance(transform.position, fish.transform.position) < 5)
             reelTimer = 0;
@@ -403,6 +409,7 @@ public class GUN : MonoBehaviour
     }
     void catchFish()
     {
+        Destroy(rippleSpawner);
         caught++;
         gameManager.fishInventory.Add(fish.GetComponent<FishBehavior>().sizeModifier);
         Destroy(fish);
@@ -413,10 +420,13 @@ public class GUN : MonoBehaviour
     }
     void SpawnFish()
     {
+        audioManager.PlayAudio(12);
+
         fish = Instantiate(fishPrefab);
     }
     public void BreakAwayFish()
     {
+        Destroy(rippleSpawner);
         reeling = false;
         gameManager.CursorLock(true);
         if (reelButton.Count > 0)
