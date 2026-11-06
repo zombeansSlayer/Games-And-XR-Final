@@ -52,7 +52,7 @@ public class FishBehavior : MonoBehaviour
         }
         AILevel = 0;
         FishBox = FishAreaBounds[Random.Range(0, FishAreaBounds.Count)];
-        gameObject.transform.position = new Vector3(Random.Range(FishBox[0].position.x, FishBox[1].position.x), -0.8f, Random.Range(FishBox[0].position.z, FishBox[1].position.z));
+        gameObject.transform.position = new Vector3(Random.Range(FishBox[0].position.x, FishBox[1].position.x), -0.6f, Random.Range(FishBox[0].position.z, FishBox[1].position.z));
         floatingPosition2 = new Vector3(Random.Range(FishBox[0].position.x, FishBox[1].position.x), -0.8f, Random.Range(FishBox[0].position.z, FishBox[1].position.z));
         floatingPosition = floatingPosition2;
         moveTimer = 0;
