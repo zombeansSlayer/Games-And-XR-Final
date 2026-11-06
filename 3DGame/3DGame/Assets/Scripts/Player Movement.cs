@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public Camera mainCam;
     public GameObject pauseMenu;
-    public VirtualMouseInput virtualMouse;
+    //public VirtualMouseInput virtualMouse;
     public Rigidbody rb;
     public float moveSpeed;
     public float accel;
@@ -39,6 +39,7 @@ public class PlayerMovement : MonoBehaviour
 
         ChangeInputType(usingController);
         InputSystem.onDeviceChange += OnDeviceChanged;
+        InputSystem.onActionChange += OnMovePerformed;
 
         move.Enable();
         look.Enable();
@@ -47,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
     private void OnDisable()
     {
         InputSystem.onDeviceChange -= OnDeviceChanged;
+        InputSystem.onActionChange -= OnMovePerformed;
 
         move.Disable();
         look.Disable();
@@ -80,7 +82,7 @@ public class PlayerMovement : MonoBehaviour
             moveDirection = move.ReadValue<Vector2>();
 
             if (usingController)
-                lookDirection = look.ReadValue<Vector2>() * 4;
+                lookDirection = look.ReadValue<Vector2>() * 6;
             else
                 lookDirection = look.ReadValue<Vector2>();
 
@@ -123,15 +125,15 @@ public class PlayerMovement : MonoBehaviour
                 audioManager.EnableOrDisableAudio(false);
         }
 
-        if (usingController)
-        {
-            Vector2 pos = virtualMouse.virtualMouse.position.value;
+        //if (usingController)
+        //{
+        //    Vector2 pos = virtualMouse.virtualMouse.position.value;
 
-            pos.x = Mathf.Clamp(pos.x, 0, Screen.width);
-            pos.y = Mathf.Clamp(pos.y, 0, Screen.height);
+        //    pos.x = Mathf.Clamp(pos.x, 0, Screen.width);
+        //    pos.y = Mathf.Clamp(pos.y, 0, Screen.height);
 
-            InputState.Change(virtualMouse.virtualMouse.position, pos);
-        }
+        //    InputState.Change(virtualMouse.virtualMouse.position, pos);
+        //}
     }
     // CHATGPT'S PROPOSED MOVEMENT SCRIPT BASED ON MY PROPOSED SCRIPT (has a startup to it and neutralizes strafing)
     private void FixedUpdate()
@@ -175,17 +177,14 @@ public class PlayerMovement : MonoBehaviour
             move = controls.PlayerCT.Move;
             look = controls.PlayerCT.Look;
             pause = controls.PlayerCT.Pause;
-
-            virtualMouse.enabled = true;
         }
         else if (!usingController)
         {
             move = controls.PlayerKB.Move;
             look = controls.PlayerKB.Look;
             pause = controls.PlayerKB.Pause;
-
-            virtualMouse.enabled = false;
         }
+        //virtualMouse.enabled = usingController;
     }
 
     private void OnDeviceChanged(InputDevice device, InputDeviceChange change)
@@ -195,23 +194,35 @@ public class PlayerMovement : MonoBehaviour
             switch (change)
             {
                 case InputDeviceChange.Disconnected:
-                    Debug.Log("Controller Disconnected. Using keyboard input...");
-                    usingController = false;
                     break;
                 case InputDeviceChange.Reconnected:
-                    Debug.Log("Controller Reconnected. Using controller input...");
-                    usingController = true;
                     break;
                 case InputDeviceChange.Added:
-                    Debug.Log("Controller Added. Using controller input...");
-                    usingController = true;
                     break;
                 case InputDeviceChange.Removed:
-                    Debug.Log("Controller Removed. Using keyboard input...");
-                    usingController = false;
                     break;
             }
             ChangeInputType(usingController);
+        }
+    }
+    private void OnMovePerformed(object obj, InputActionChange change)
+    {
+        // Only trigger when an action is actively performed
+        if (change == InputActionChange.ActionStarted || change == InputActionChange.ActionPerformed)
+        {
+            var action = (InputAction)obj;
+            InputDevice device = action.activeControl.device;
+
+            if (device is Gamepad && !usingController)
+            {
+                usingController = true;
+                ChangeInputType(usingController);
+            }
+            else if ((device is Keyboard || device is Mouse) && usingController)
+            {
+                usingController = false;
+                ChangeInputType(usingController);
+            }
         }
     }
 

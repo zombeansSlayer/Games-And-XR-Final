@@ -4,6 +4,7 @@ using TMPro;
 using System;
 using Unity.VisualScripting;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GUN : MonoBehaviour
 {
@@ -48,6 +49,9 @@ public class GUN : MonoBehaviour
     private InputAction aim;
     private InputAction fire;
     private InputAction reel;
+    private InputAction confirm;
+    private InputAction back;
+    private InputAction interact;
 
     private GameManager gameManager;
     private AudioManager audioManager;
@@ -68,20 +72,32 @@ public class GUN : MonoBehaviour
             fire = controls.PlayerKB.Fire;
             reel = controls.PlayerKB.Reel;
         }
+        interact = controls.PlayerCT.Interact;
+        confirm = controls.PlayerCT.Confirm;
+        back = controls.PlayerCT.Back;
+
         InputSystem.onDeviceChange += OnDeviceChanged;
+        InputSystem.onActionChange += OnMovePerformed;
 
         aim.Enable();
         fire.Enable();
         reel.Enable();
+        confirm.Enable();
+        back.Enable();
+        interact.Enable();
     }
 
     private void OnDisable()
     {
         InputSystem.onDeviceChange -= OnDeviceChanged;
+        InputSystem.onActionChange -= OnMovePerformed;
 
         aim.Disable();
         fire.Disable();
         reel.Disable();
+        confirm.Disable();
+        back.Disable();
+        interact.Disable();
     }
 
     private void Awake()
@@ -121,10 +137,28 @@ public class GUN : MonoBehaviour
             {
                 rightClickGraphic.SetActive(true);
             }
-            else if (!aiming && fire.WasPressedThisFrame() == true && atWheel)
+            else if (!aiming && (fire.WasPressedThisFrame() || interact.WasPressedThisFrame()) == true && atWheel)
             {
                 exitToMarketConfirm.SetActive(true);
-                gameManager.CursorLock(false);
+
+                if (!usingController) 
+                    gameManager.CursorLock(false);
+
+                if (usingController)
+                    exitToMarketConfirm.transform.GetChild(3).gameObject.SetActive(true); // Buttons to press graphics for gamepad
+            }
+            if (usingController && exitToMarketConfirm.activeInHierarchy)
+            {
+                if (confirm.WasPressedThisFrame())
+                {
+                    Button button = exitToMarketConfirm.transform.GetChild(1).gameObject.GetComponent<Button>();
+                    button.onClick.Invoke();
+                }
+                else if (back.WasPressedThisFrame())
+                {
+                    Button button = exitToMarketConfirm.transform.GetChild(2).gameObject.GetComponent<Button>();
+                    button.onClick.Invoke();
+                }
             }
 
             if (aiming && spearProjectile == null)
@@ -338,6 +372,7 @@ public class GUN : MonoBehaviour
             aim = controls.PlayerCT.Aim;
             fire = controls.PlayerCT.Fire;
             reel = controls.PlayerCT.Reel;
+            back = controls.PlayerCT.Back;
         }
         else if (!usingController)
         {
@@ -354,23 +389,35 @@ public class GUN : MonoBehaviour
             switch (change)
             {
                 case InputDeviceChange.Disconnected:
-                    Debug.Log("Controller Disconnected. Using keyboard input...");
-                    usingController = false;
                     break;
                 case InputDeviceChange.Reconnected:
-                    Debug.Log("Controller Reconnected. Using controller input...");
-                    usingController = true;
                     break;
                 case InputDeviceChange.Added:
-                    Debug.Log("Controller Added. Using controller input...");
-                    usingController = true;
                     break;
                 case InputDeviceChange.Removed:
-                    Debug.Log("Controller Removed. Using keyboard input...");
-                    usingController = false;
                     break;
             }
             ChangeInputType(usingController);
+        }
+    }
+    private void OnMovePerformed(object obj, InputActionChange change)
+    {
+        // Only trigger when an action is actively performed
+        if (change == InputActionChange.ActionStarted || change == InputActionChange.ActionPerformed)
+        {
+            var action = (InputAction)obj;
+            InputDevice device = action.activeControl.device;
+
+            if (device is Gamepad && !usingController)
+            {
+                usingController = true;
+                ChangeInputType(usingController);
+            }
+            else if ((device is Keyboard || device is Mouse) && usingController)
+            {
+                usingController = false;
+                ChangeInputType(usingController);
+            }
         }
     }
 

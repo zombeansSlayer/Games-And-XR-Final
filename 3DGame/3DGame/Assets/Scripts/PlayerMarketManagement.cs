@@ -32,12 +32,14 @@ public class PlayerMarketManagement : MonoBehaviour
 
         ChangeInputType(usingController);
         InputSystem.onDeviceChange += OnDeviceChanged;
+        InputSystem.onActionChange += OnMovePerformed;
 
         interact.Enable();
     }
     private void OnDisable()
     {
         InputSystem.onDeviceChange -= OnDeviceChanged;
+        InputSystem.onActionChange -= OnMovePerformed;
 
         interact.Disable();
     }
@@ -149,23 +151,35 @@ public class PlayerMarketManagement : MonoBehaviour
             switch (change)
             {
                 case InputDeviceChange.Disconnected:
-                    Debug.Log("Controller Disconnected. Using keyboard input...");
-                    usingController = false;
                     break;
                 case InputDeviceChange.Reconnected:
-                    Debug.Log("Controller Reconnected. Using controller input...");
-                    usingController = true;
                     break;
                 case InputDeviceChange.Added:
-                    Debug.Log("Controller Added. Using controller input...");
-                    usingController = true;
                     break;
                 case InputDeviceChange.Removed:
-                    Debug.Log("Controller Removed. Using keyboard input...");
-                    usingController = false;
                     break;
             }
             ChangeInputType(usingController);
+        }
+    }
+    private void OnMovePerformed(object obj, InputActionChange change)
+    {
+        // Only trigger when an action is actively performed
+        if (change == InputActionChange.ActionStarted || change == InputActionChange.ActionPerformed)
+        {
+            var action = (InputAction)obj;
+            InputDevice device = action.activeControl.device;
+
+            if (device is Gamepad && !usingController)
+            {
+                usingController = true;
+                ChangeInputType(usingController);
+            }
+            else if ((device is Keyboard || device is Mouse) && usingController)
+            {
+                usingController = false;
+                ChangeInputType(usingController);
+            }
         }
     }
 }
