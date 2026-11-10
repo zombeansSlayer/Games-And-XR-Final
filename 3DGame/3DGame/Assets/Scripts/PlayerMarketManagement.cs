@@ -6,7 +6,6 @@ using System;
 
 public class PlayerMarketManagement : MonoBehaviour
 {
-    public PlayerControls controls;
     public Transform cameraTransform;
     public TextMeshProUGUI interactText;
     public GameObject interactGraphic;
@@ -21,37 +20,15 @@ public class PlayerMarketManagement : MonoBehaviour
 
     public CustomerSpawner customers;
 
-    private InputAction interact;
     private bool usingController;
 
     private GameManager gameManager;
-
-    private void OnEnable()
-    {
-        usingController = Gamepad.current != null;
-
-        ChangeInputType(usingController);
-        InputSystem.onDeviceChange += OnDeviceChanged;
-        InputSystem.onActionChange += OnMovePerformed;
-
-        interact.Enable();
-    }
-    private void OnDisable()
-    {
-        InputSystem.onDeviceChange -= OnDeviceChanged;
-        InputSystem.onActionChange -= OnMovePerformed;
-
-        interact.Disable();
-    }
-
-    private void Awake()
-    {
-        controls = new PlayerControls();
-    }
+    private ControlsManager controlsManager;
 
     private void Start()
     {
         gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
+        controlsManager = GameObject.FindWithTag("Controls Manager").GetComponent<ControlsManager>();
 
         UpdateCostNumbers();
         UpdateValueNumbers();
@@ -77,7 +54,7 @@ public class PlayerMarketManagement : MonoBehaviour
             if (interactText.text == "") 
                 interactText.text = interactable.interactableFlavorText;
 
-            if (interact.WasPressedThisFrame())
+            if (controlsManager.interact.WasPressedThisFrame())
             {
                 interactable.onInteract.Invoke();
             }
@@ -136,50 +113,5 @@ public class PlayerMarketManagement : MonoBehaviour
             }
         }
         valueUI[1].text = $"Fish in Stock: {totalFish}";
-    }
-    private void ChangeInputType(bool usingController)
-    {
-        if (usingController)
-            interact = controls.PlayerCT.Interact;
-        else if (!usingController)
-            interact = controls.PlayerKB.Interact;
-    }
-    private void OnDeviceChanged(InputDevice device, InputDeviceChange change)
-    {
-        if (device is Gamepad)
-        {
-            switch (change)
-            {
-                case InputDeviceChange.Disconnected:
-                    break;
-                case InputDeviceChange.Reconnected:
-                    break;
-                case InputDeviceChange.Added:
-                    break;
-                case InputDeviceChange.Removed:
-                    break;
-            }
-            ChangeInputType(usingController);
-        }
-    }
-    private void OnMovePerformed(object obj, InputActionChange change)
-    {
-        // Only trigger when an action is actively performed
-        if (change == InputActionChange.ActionStarted || change == InputActionChange.ActionPerformed)
-        {
-            var action = (InputAction)obj;
-            InputDevice device = action.activeControl.device;
-
-            if (device is Gamepad && !usingController)
-            {
-                usingController = true;
-                ChangeInputType(usingController);
-            }
-            else if ((device is Keyboard || device is Mouse) && usingController)
-            {
-                usingController = false;
-                ChangeInputType(usingController);
-            }
-        }
     }
 }

@@ -17,6 +17,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioMixerGroup masterMixerGroup;
 
     [SerializeField] private Animator waveCrashAnimator;
+    [SerializeField] private Animator splashAnim;
 
     private bool fadingOut;
     private GameManager gameManager;
@@ -75,6 +76,8 @@ public class AudioManager : MonoBehaviour
 
             //if (chosenSound == 0)
                 waveCrashAnimator.SetTrigger("Splash");
+            splashAnim.SetTrigger("Splash");
+
         }
     }
 

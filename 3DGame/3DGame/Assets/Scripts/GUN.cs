@@ -16,6 +16,7 @@ public class GUN : MonoBehaviour
     public GameObject fishPrefab;
     public GameObject spearPrefab;
     public GameObject reelButtonPrefab;
+    public GameObject reelButtonPrefabCT;
     public GameObject rippleSpawnerPrefab;
 
     public GameObject rightClickGraphic;
@@ -31,10 +32,11 @@ public class GUN : MonoBehaviour
     Vector3 gunStartingRot;
 
     public int reelingThreshold;
-    private bool aiming;
+    [HideInInspector] public bool aiming;
     private float reelTimer;
     private float reelButtonBuffer = 1;
     private float fishRespawnTimer = 8;
+    private float reelInputBufferCT = 0.5f;
     public float shotSpeed;
     public bool atWheel = false;
     public bool reeling;
@@ -45,72 +47,18 @@ public class GUN : MonoBehaviour
     GameObject spearProjectile;
     Rigidbody spearRigidbody;
 
-    public PlayerControls controls;
-    private InputAction aim;
-    private InputAction fire;
-    private InputAction reel;
-    private InputAction confirm;
-    private InputAction back;
-    private InputAction interact;
-
     private GameManager gameManager;
     private AudioManager audioManager;
-
-    private void OnEnable()
-    {
-        usingController = Gamepad.current != null;
-
-        if (usingController)
-        {
-            aim = controls.PlayerCT.Aim;
-            fire = controls.PlayerCT.Fire;
-            reel = controls.PlayerCT.Reel;
-        }
-        else if (!usingController)
-        {
-            aim = controls.PlayerKB.Aim;
-            fire = controls.PlayerKB.Fire;
-            reel = controls.PlayerKB.Reel;
-        }
-        interact = controls.PlayerCT.Interact;
-        confirm = controls.PlayerCT.Confirm;
-        back = controls.PlayerCT.Back;
-
-        InputSystem.onDeviceChange += OnDeviceChanged;
-        InputSystem.onActionChange += OnMovePerformed;
-
-        aim.Enable();
-        fire.Enable();
-        reel.Enable();
-        confirm.Enable();
-        back.Enable();
-        interact.Enable();
-    }
-
-    private void OnDisable()
-    {
-        InputSystem.onDeviceChange -= OnDeviceChanged;
-        InputSystem.onActionChange -= OnMovePerformed;
-
-        aim.Disable();
-        fire.Disable();
-        reel.Disable();
-        confirm.Disable();
-        back.Disable();
-        interact.Disable();
-    }
-
-    private void Awake()
-    {
-        controls = new PlayerControls();
-    }
+    private ControlsManager controlsManager;
 
     private void Start()
     {
         gunStartingPos = gun.transform.localPosition;
         gunStartingRot = gun.transform.localEulerAngles;
+
         gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
         audioManager = GameObject.FindWithTag("Audio Manager").GetComponent<AudioManager>();
+        controlsManager = GameObject.FindWithTag("Controls Manager").GetComponent<ControlsManager>();
 
         if (mainCam == null)
             mainCam = Camera.current.gameObject;
@@ -120,6 +68,7 @@ public class GUN : MonoBehaviour
 
     private void Update()
     {
+        usingController = controlsManager.usingController;
         if (gameManager.paused)
             return;
 
@@ -127,17 +76,17 @@ public class GUN : MonoBehaviour
 
         if (!reeling)
         {
-            aiming = aim.ReadValue<float>() > 0;
+            aiming = controlsManager.aim.ReadValue<float>() > 0;
 
-            if (aiming && fire.WasPressedThisFrame() && spearProjectile == null)
+            if (aiming && controlsManager.fire.WasPressedThisFrame() && spearProjectile == null)
             {
                 ShootGun();
             }
-            if (!aiming && fire.WasPressedThisFrame() == true && !atWheel)
+            if (!aiming && controlsManager.fire.WasPressedThisFrame() == true && !atWheel)
             {
                 rightClickGraphic.SetActive(true);
             }
-            else if (!aiming && (fire.WasPressedThisFrame() || interact.WasPressedThisFrame()) == true && atWheel)
+            else if (!aiming && (controlsManager.fire.WasPressedThisFrame() || controlsManager.interact.WasPressedThisFrame()) == true && atWheel)
             {
                 exitToMarketConfirm.SetActive(true);
 
@@ -149,12 +98,12 @@ public class GUN : MonoBehaviour
             }
             if (usingController && exitToMarketConfirm.activeInHierarchy)
             {
-                if (confirm.WasPressedThisFrame())
+                if (controlsManager.A.WasPressedThisFrame())
                 {
                     Button button = exitToMarketConfirm.transform.GetChild(1).gameObject.GetComponent<Button>();
                     button.onClick.Invoke();
                 }
-                else if (back.WasPressedThisFrame())
+                else if (controlsManager.B.WasPressedThisFrame())
                 {
                     Button button = exitToMarketConfirm.transform.GetChild(2).gameObject.GetComponent<Button>();
                     button.onClick.Invoke();
@@ -218,7 +167,6 @@ public class GUN : MonoBehaviour
 
             spearProjectile.transform.position = fish.transform.position;
 
-            //perIntervalReelPower += reel.ReadValue<float>();
             float lastFrameReelTimer = reelTimer;
             reelTimer -= Time.deltaTime;
 
@@ -226,10 +174,67 @@ public class GUN : MonoBehaviour
                 reelButtonBuffer -= Time.deltaTime * strength;
 
             if (reelButton.Count == 0) scrollGraphic.SetActive(true);
-            else if (reelButton.Count > 0) scrollGraphic.SetActive(false);
+            else if (reelButton.Count > 0)
+            {
+                scrollGraphic.SetActive(false);
 
-            if (reel.ReadValue<float>() > 0 && reelButton.Count == 0 && reelTimer > 0 
-                || reel.ReadValue<float>() > 0 && reelButton.Count == 0 && reelTimer < -0.75f)
+                if (usingController)
+                {
+                    reelInputBufferCT -= Time.deltaTime;
+                    ReelButton buttonScript = reelButton[0].GetComponent<ReelButton>();
+                    if (controlsManager.A.WasPressedThisFrame() && reelInputBufferCT <= 0)
+                    {
+                        if (buttonScript.inputIndex == 0)
+                        {
+                            reelButton[0].GetComponent<Button>().onClick.Invoke();
+                            reelButton.RemoveAt(0);
+                        }
+                        else
+                        {
+                            reelInputBufferCT = 0.5f;
+                        }
+                    }
+                    else if (controlsManager.B.WasPressedThisFrame() && reelInputBufferCT <= 0)
+                    {
+                        if (buttonScript.inputIndex == 1)
+                        {
+                            reelButton[0].GetComponent<Button>().onClick.Invoke();
+                            reelButton.RemoveAt(0);
+                        }
+                        else
+                        {
+                            reelInputBufferCT = 0.5f;
+                        }
+                    }
+                    else if (controlsManager.X.WasPressedThisFrame() && reelInputBufferCT <= 0)
+                    {
+                        if (buttonScript.inputIndex == 2)
+                        {
+                            reelButton[0].GetComponent<Button>().onClick.Invoke();
+                            reelButton.RemoveAt(0);
+                        }
+                        else
+                        {
+                            reelInputBufferCT = 0.5f;
+                        }
+                    }
+                    else if (controlsManager.Y.WasPressedThisFrame() && reelInputBufferCT <= 0)
+                    {
+                        if (buttonScript.inputIndex == 3)
+                        {
+                            reelButton[0].GetComponent<Button>().onClick.Invoke();
+                            reelButton.RemoveAt(0);
+                        }
+                        else
+                        {
+                            reelInputBufferCT = 0.5f;
+                        }
+                    }
+                }
+            }
+
+            if (controlsManager.reel.ReadValue<float>() > 0 && reelButton.Count == 0 && reelTimer > 0 
+                || controlsManager.reel.ReadValue<float>() > 0 && reelButton.Count == 0 && reelTimer < -0.75f)
             {
                 if (reelTimer < -0.75f)
                 {
@@ -274,14 +279,6 @@ public class GUN : MonoBehaviour
                     }
                 }
             }
-            //if (Vector3.Distance(fish.transform.position, transform.position) > 10)
-            //{
-            //    reeling = false;
-            //    Cursor.lockState = CursorLockMode.Locked;
-            //    Cursor.visible = false;
-            //    if (reelButton != null) Destroy(reelButton);
-            //    returning = true;
-            //}
         }
     }
     private void FixedUpdate()
@@ -305,14 +302,12 @@ public class GUN : MonoBehaviour
             else if (spearProjectile.transform.position != spearBasePos.position && returning) // The spear returning to the gun
             {
                 spearProjectile.transform.position = Vector3.MoveTowards(spearProjectile.transform.position, spearBasePos.position, shotSpeed);
-                //Debug.Log("B");
             }
 
             else if (spearRigidbody.linearVelocity == Vector3.zero) // When the spear hits its apex without finding a fish
             {
                 returning = true;
                 MissFish();
-                //Debug.Log("C");
             }
 
             if (spearProjectile.transform.position == spearBasePos.position && returning == true) // Return the spear to the gun
@@ -320,13 +315,11 @@ public class GUN : MonoBehaviour
                 spear.SetActive(true);
                 Destroy(spearProjectile);
                 returning = false;
-                //Debug.Log("D");
             }
 
             if (spearProjectile.GetComponent<SpearHitDetect>().hitFish && !returning) // If the spear hits the fish
             {
                 HitFish();
-                //Debug.Log("E");
             }
 
             else if (spearProjectile.GetComponent<SpearHitDetect>().hitOther && !returning) // If the spear hits something else
@@ -335,7 +328,6 @@ public class GUN : MonoBehaviour
 
                 returning = true;
                 MissFish();
-                //Debug.Log("F");
             }
         }
 
@@ -356,67 +348,23 @@ public class GUN : MonoBehaviour
                 audioManager.PlayAudio(10);
                 audioManager.PlayAudio(11);
 
-                for (int i = 0; i < UnityEngine.Random.Range(2, 5); i++)
+                if (usingController)
                 {
-                    reelButton.Add(Instantiate(reelButtonPrefab, GameObject.Find("ReelButtonLayer").transform));
+                    for (int i = 0; i < 4; i++)
+                    {
+                        reelButton.Add(Instantiate(reelButtonPrefabCT, GameObject.Find("ReelButtonLayer").transform));
+                        reelButton[i].GetComponent<ReelButton>().index = i - 2;
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        reelButton.Add(Instantiate(reelButtonPrefab, GameObject.Find("ReelButtonLayer").transform));
+                    }
                 }
                 reelTimer = -0.5f;
                 reelButtonBuffer = 3 * strength;
-            }
-        }
-    }
-    private void ChangeInputType(bool usingController)
-    {
-        if (usingController)
-        {
-            aim = controls.PlayerCT.Aim;
-            fire = controls.PlayerCT.Fire;
-            reel = controls.PlayerCT.Reel;
-            back = controls.PlayerCT.Back;
-        }
-        else if (!usingController)
-        {
-            aim = controls.PlayerKB.Aim;
-            fire = controls.PlayerKB.Fire;
-            reel = controls.PlayerKB.Reel;
-        }
-    }
-
-    private void OnDeviceChanged(InputDevice device, InputDeviceChange change)
-    {
-        if (device is Gamepad)
-        {
-            switch (change)
-            {
-                case InputDeviceChange.Disconnected:
-                    break;
-                case InputDeviceChange.Reconnected:
-                    break;
-                case InputDeviceChange.Added:
-                    break;
-                case InputDeviceChange.Removed:
-                    break;
-            }
-            ChangeInputType(usingController);
-        }
-    }
-    private void OnMovePerformed(object obj, InputActionChange change)
-    {
-        // Only trigger when an action is actively performed
-        if (change == InputActionChange.ActionStarted || change == InputActionChange.ActionPerformed)
-        {
-            var action = (InputAction)obj;
-            InputDevice device = action.activeControl.device;
-
-            if (device is Gamepad && !usingController)
-            {
-                usingController = true;
-                ChangeInputType(usingController);
-            }
-            else if ((device is Keyboard || device is Mouse) && usingController)
-            {
-                usingController = false;
-                ChangeInputType(usingController);
             }
         }
     }

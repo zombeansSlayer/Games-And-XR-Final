@@ -113,7 +113,7 @@ public class FishBehavior : MonoBehaviour
             floatingPosition = Vector3.MoveTowards(floatingPosition, floatingPosition2, flyingSpeed * sizeModifier * Time.deltaTime);
         }
 
-        if (AILevel == 3 && Vector3.Distance(transform.position, floatingPosition) > 10)
+        if (AILevel == 3 && Vector3.Distance(transform.position, floatingPosition) > 14)
         {
             AILevel = 2;
             GameObject.FindWithTag("Gun").GetComponent<GUN>().BreakAwayFish();

@@ -7,17 +7,11 @@ public class PlayerMovement : MonoBehaviour
 {
     public Camera mainCam;
     public GameObject pauseMenu;
-    //public VirtualMouseInput virtualMouse;
     public Rigidbody rb;
     public float moveSpeed;
     public float accel;
     public float lookSpeed;
-    public PlayerControls controls;
     public GUN gun;
-
-    private InputAction move;
-    private InputAction look;
-    private InputAction pause;
 
     private Vector2 mouse = Vector2.zero;
 
@@ -29,62 +23,39 @@ public class PlayerMovement : MonoBehaviour
 
     private GameManager gameManager;
     private AudioManager audioManager;
+    private ControlsManager controlsManager;
 
-    private void OnEnable()
-    {
-        controls.PlayerCT.Enable();
-        controls.PlayerKB.Enable();
-
-        usingController = Gamepad.current != null;
-
-        ChangeInputType(usingController);
-        InputSystem.onDeviceChange += OnDeviceChanged;
-        InputSystem.onActionChange += OnMovePerformed;
-
-        move.Enable();
-        look.Enable();
-        pause.Enable();
-    }
-    private void OnDisable()
-    {
-        InputSystem.onDeviceChange -= OnDeviceChanged;
-        InputSystem.onActionChange -= OnMovePerformed;
-
-        move.Disable();
-        look.Disable();
-        pause.Disable();
-        controls.PlayerCT.Disable();
-        controls.PlayerKB.Disable();
-    }
-
-    private void Awake()
-    {
-        controls = new PlayerControls();
-    }
     private void Start()
     {
         gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
+
+        if (GameObject.FindWithTag("Controls Manager") != null)
+        {
+            controlsManager = GameObject.FindWithTag("Controls Manager").GetComponent<ControlsManager>();
+        }
+
         if (GameObject.FindWithTag("Audio Manager") != null) 
         { 
             audioManager = GameObject.FindWithTag("Audio Manager").GetComponent<AudioManager>();
         }
+
         gameManager.CursorLock(true);
         gameManager.warned = false;
     }
     private void Update()
     {
-        // MY PROPOSED MOVEMENT SCRIPT (working, but robotic looking)
-        //rb.linearVelocity = (transform.forward * moveDirection.y * moveSpeed) + (transform.right * moveDirection.x * moveSpeed);
+        usingController = controlsManager.usingController;
+        // PLAYER AND CAMERA MOVEMENT
         if (Cursor.visible == false)
         {
             rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
-            moveDirection = move.ReadValue<Vector2>();
+            moveDirection = controlsManager.move.ReadValue<Vector2>();
 
-            if (usingController)
-                lookDirection = look.ReadValue<Vector2>() * 6;
+            if (usingController && !gun.aiming)
+                lookDirection = controlsManager.look.ReadValue<Vector2>() * 6;
             else
-                lookDirection = look.ReadValue<Vector2>();
+                lookDirection = controlsManager.look.ReadValue<Vector2>();
 
             mouse.x += lookDirection.x * lookSpeed;
             mouse.y += lookDirection.y * lookSpeed;
@@ -98,17 +69,7 @@ public class PlayerMovement : MonoBehaviour
             rb.constraints = RigidbodyConstraints.FreezeAll; 
         }
 
-        if (pause.WasPressedThisFrame() && paused) // Unpause
-        {
-            paused = false;
-            gameManager.paused = false;
-            pauseMenu.SetActive(paused);
-            if (!hadMouseWhenPaused) gameManager.CursorLock(true);
-
-            if (audioManager != null) 
-                audioManager.EnableOrDisableAudio(true);
-        }
-        else if (pause.WasPressedThisFrame() && !paused) // Pause
+        if (controlsManager.pause.WasPressedThisFrame() && !paused) // Pause
         {
             paused = true;
             gameManager.paused = true;
@@ -125,15 +86,16 @@ public class PlayerMovement : MonoBehaviour
                 audioManager.EnableOrDisableAudio(false);
         }
 
-        //if (usingController)
-        //{
-        //    Vector2 pos = virtualMouse.virtualMouse.position.value;
+        else if (controlsManager.pause.WasPressedThisFrame() && paused) // Unpause
+        {
+            paused = false;
+            gameManager.paused = false;
+            pauseMenu.SetActive(paused);
+            if (!hadMouseWhenPaused) gameManager.CursorLock(true);
 
-        //    pos.x = Mathf.Clamp(pos.x, 0, Screen.width);
-        //    pos.y = Mathf.Clamp(pos.y, 0, Screen.height);
-
-        //    InputState.Change(virtualMouse.virtualMouse.position, pos);
-        //}
+            if (audioManager != null) 
+                audioManager.EnableOrDisableAudio(true);
+        }
     }
     // CHATGPT'S PROPOSED MOVEMENT SCRIPT BASED ON MY PROPOSED SCRIPT (has a startup to it and neutralizes strafing)
     private void FixedUpdate()
@@ -170,61 +132,6 @@ public class PlayerMovement : MonoBehaviour
         gameManager.CursorLock(i);
     }
 
-    private void ChangeInputType(bool usingController)
-    {
-        if (usingController)
-        {
-            move = controls.PlayerCT.Move;
-            look = controls.PlayerCT.Look;
-            pause = controls.PlayerCT.Pause;
-        }
-        else if (!usingController)
-        {
-            move = controls.PlayerKB.Move;
-            look = controls.PlayerKB.Look;
-            pause = controls.PlayerKB.Pause;
-        }
-        //virtualMouse.enabled = usingController;
-    }
-
-    private void OnDeviceChanged(InputDevice device, InputDeviceChange change)
-    {
-        if (device is Gamepad)
-        {
-            switch (change)
-            {
-                case InputDeviceChange.Disconnected:
-                    break;
-                case InputDeviceChange.Reconnected:
-                    break;
-                case InputDeviceChange.Added:
-                    break;
-                case InputDeviceChange.Removed:
-                    break;
-            }
-            ChangeInputType(usingController);
-        }
-    }
-    private void OnMovePerformed(object obj, InputActionChange change)
-    {
-        // Only trigger when an action is actively performed
-        if (change == InputActionChange.ActionStarted || change == InputActionChange.ActionPerformed)
-        {
-            var action = (InputAction)obj;
-            InputDevice device = action.activeControl.device;
-
-            if (device is Gamepad && !usingController)
-            {
-                usingController = true;
-                ChangeInputType(usingController);
-            }
-            else if ((device is Keyboard || device is Mouse) && usingController)
-            {
-                usingController = false;
-                ChangeInputType(usingController);
-            }
-        }
-    }
 
     private void OnTriggerEnter(Collider other)
     {

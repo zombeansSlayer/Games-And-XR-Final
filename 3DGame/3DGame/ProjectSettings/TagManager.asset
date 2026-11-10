@@ -13,6 +13,7 @@ TagManager:
   - Register
   - WheelBox
   - Audio Manager
+  - Controls Manager
   layers:
   - Default
   - TransparentFX
