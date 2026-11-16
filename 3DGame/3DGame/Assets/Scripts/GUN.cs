@@ -26,6 +26,8 @@ public class GUN : MonoBehaviour
 
     public Transform spearBasePos;
     public TextMeshProUGUI caughtText;
+    public Animator fishFinderAnim;
+    public Animator screenShakeAnim;
     public float baseButtonChance;
     int caught = 0;
     Vector3 gunStartingPos;
@@ -373,6 +375,7 @@ public class GUN : MonoBehaviour
     {
         audioManager.PlayAudio(3);
         audioManager.PlayAudio(4);
+        screenShakeAnim.SetTrigger("Shake");
 
         spear.SetActive(false);
 
@@ -416,6 +419,7 @@ public class GUN : MonoBehaviour
     void SpawnFish()
     {
         audioManager.PlayAudio(12);
+        fishFinderAnim.SetTrigger("Blink");
 
         fish = Instantiate(fishPrefab);
     }
