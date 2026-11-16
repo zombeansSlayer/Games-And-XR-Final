@@ -264,7 +264,7 @@ public class GUN : MonoBehaviour
                 fish.GetComponent<FishBehavior>().reelModifier = 1f / strength;
             }
 
-            if (fish.transform.position.y >= 0.2f)
+            if (fish.transform.position.y >= -0.1f)
             {
                 catchFish();
 

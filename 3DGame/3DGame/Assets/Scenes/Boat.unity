@@ -292,60 +292,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &114178947
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 114178948}
-  - component: {fileID: 114178949}
-  m_Layer: 0
-  m_Name: SplashAnim
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &114178948
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 114178947}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8638749028519386522}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &114178949
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 114178947}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 79c6de290f4c69c4c8a80caff049be05, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &154817937
 GameObject:
   m_ObjectHideFlags: 0
@@ -1976,7 +1922,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1, y: 0.19, z: 0}
-  m_LocalScale: {x: 110.65479, y: 110.65479, z: 110.65479}
+  m_LocalScale: {x: 5657.4473, y: 5657.4473, z: 5657.4473}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1995,7 +1941,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waterMaterial: {fileID: 2100000, guid: d9d1335d096f8f3408b5020ca20fc388, type: 2}
   waterSpeed: 0.15
-  waterDirection: {x: -1, y: 0.2}
 --- !u!43 &510760556
 Mesh:
   m_ObjectHideFlags: 0
@@ -5625,7 +5570,7 @@ MonoBehaviour:
   soundsVolume: 0
   masterMixerGroup: {fileID: 24300002, guid: 425758c3a9ca8e14bb350e10d1d844fc, type: 2}
   waveCrashAnimator: {fileID: 8638749028519386523}
-  splashAnim: {fileID: 114178949}
+  splashAnim: {fileID: 0}
   scoping: 0
 --- !u!4 &734711808
 Transform:
@@ -9610,8 +9555,8 @@ Transform:
   m_GameObject: {fileID: 1814187822}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.32, y: -4.71, z: 0.34}
-  m_LocalScale: {x: 0.9819526, y: 0.72147006, z: 0.99432516}
+  m_LocalPosition: {x: -0.32, y: -4.71, z: 0.37}
+  m_LocalScale: {x: 0.9819526, y: 0.72147006, z: 0.9959851}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5285388369160504022}
@@ -10411,9 +10356,10 @@ GameObject:
   - component: {fileID: 2858423369459125471}
   - component: {fileID: 6971596464619345993}
   - component: {fileID: 8074190405198417269}
+  - component: {fileID: 8074190405198417270}
   m_Layer: 0
   m_Name: Engine
-  m_TagString: Untagged
+  m_TagString: Boat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10459,6 +10405,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 189655207899197554}
+  - component: {fileID: 714412923129309897}
   m_Layer: 0
   m_Name: Cooler
   m_TagString: Untagged
@@ -10466,6 +10413,27 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!65 &714412923129309897
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 714412923129309896}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.1494617, y: 1, z: 0.64223105}
+  m_Center: {x: -1.0433935, y: 0, z: 2.4759629}
 --- !u!33 &718425787075415024
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -14967,6 +14935,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &8074190405198417270
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 521274364250473304}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.52
+  m_Height: 2.33
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: -0.43}
 --- !u!23 &8075533152003136450
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -15312,12 +15303,11 @@ Transform:
   m_GameObject: {fileID: 2678005057705013609}
   serializedVersion: 2
   m_LocalRotation: {x: -0.115488134, y: 0.99329436, z: -0.0006205462, w: -0.0053372155}
-  m_LocalPosition: {x: -8.38, y: -0.54398, z: 3.73}
+  m_LocalPosition: {x: -8.44, y: -0.28, z: 3.97}
   m_LocalScale: {x: 0.77903, y: 1.0504441, z: 0.77903}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7027523127778687105}
-  - {fileID: 114178948}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0.141, y: 180.599, z: -13.263}
 --- !u!95 &8638749028519386523
@@ -15538,7 +15528,7 @@ MonoBehaviour:
   mainCam: {fileID: 2027543074}
   fish: {fileID: 0}
   spear: {fileID: 5641519881711882894}
-  fishPrefab: {fileID: 5162779524384739753, guid: 2397aefe0a6cb9343912fd61b20446d2, type: 3}
+  fishPrefab: {fileID: 3821551041761606415, guid: d83514dd86b30a144a29636c2fc5d051, type: 3}
   spearPrefab: {fileID: 7659196330153834571, guid: 35ea8799cdf1191479523edc3e46f034, type: 3}
   reelButtonPrefab: {fileID: 7162047107731860652, guid: 685dcc5eb18c81c4790cdc754e0fef64, type: 3}
   reelButtonPrefabCT: {fileID: 7162047107731860652, guid: f2596ecf56101a043814e768e401ddc0, type: 3}

@@ -9,6 +9,7 @@ public class FishBehavior : MonoBehaviour
     public float sizeModifier;
     public int AILevel;
     public GameObject fish;
+    [SerializeField] private Animator anim;
 
     private List<List<Transform>> FishAreaBounds = new List<List<Transform>>();
     private List<Transform> FishBox;
@@ -64,6 +65,8 @@ public class FishBehavior : MonoBehaviour
         if (gameManager.paused)
             return;
 
+        anim.SetInteger("FishAI", AILevel);
+
         moveTimer -= Time.deltaTime;
         if (moveTimer <= 0 && AILevel == 1 || floatingPosition2 == floatingPosition && AILevel == 1)
         {
@@ -118,5 +121,13 @@ public class FishBehavior : MonoBehaviour
             AILevel = 2;
             GameObject.FindWithTag("Gun").GetComponent<GUN>().BreakAwayFish();
         }
+
+        transform.LookAt(floatingPosition);
+        if (AILevel < 2)
+            transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y + 180, 0);
+        else if (AILevel == 2)
+            transform.localEulerAngles = new Vector3(90, transform.localEulerAngles.y + 180, 0);
+        else
+            transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, 0);
     }
 }

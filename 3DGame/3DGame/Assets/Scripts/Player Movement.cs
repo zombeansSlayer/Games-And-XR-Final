@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
         // PLAYER AND CAMERA MOVEMENT
         if (Cursor.visible == false)
         {
-            rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            rb.constraints = RigidbodyConstraints.FreezeRotation;
 
             moveDirection = controlsManager.move.ReadValue<Vector2>();
 
