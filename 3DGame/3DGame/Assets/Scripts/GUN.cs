@@ -8,7 +8,6 @@ using UnityEngine.UI;
 
 public class GUN : MonoBehaviour
 {
-    public GameObject gun;
     public GameObject mainCam;
     public GameObject fish;
     public GameObject spear;
@@ -24,14 +23,13 @@ public class GUN : MonoBehaviour
     public GameObject exitToMarketConfirm;
     private GameObject rippleSpawner;
 
+    [SerializeField] private Transform shootDir;
     public Transform spearBasePos;
     public TextMeshProUGUI caughtText;
     public Animator fishFinderAnim;
     public Animator screenShakeAnim;
     public float baseButtonChance;
     int caught = 0;
-    Vector3 gunStartingPos;
-    Vector3 gunStartingRot;
 
     public int reelingThreshold;
     [HideInInspector] public bool aiming;
@@ -47,6 +45,7 @@ public class GUN : MonoBehaviour
     private bool usingController;
     bool returning = false;
     GameObject spearProjectile;
+    private Animator gunAnim;
     Rigidbody spearRigidbody;
 
     private GameManager gameManager;
@@ -55,9 +54,6 @@ public class GUN : MonoBehaviour
 
     private void Start()
     {
-        gunStartingPos = gun.transform.localPosition;
-        gunStartingRot = gun.transform.localEulerAngles;
-
         gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
         audioManager = GameObject.FindWithTag("Audio Manager").GetComponent<AudioManager>();
         controlsManager = GameObject.FindWithTag("Controls Manager").GetComponent<ControlsManager>();
@@ -66,6 +62,8 @@ public class GUN : MonoBehaviour
             mainCam = Camera.current.gameObject;
 
         zoomVariable = FOVVariable - 20;
+
+        gunAnim = gameObject.GetComponent<Animator>();
     }
 
     private void Update()
@@ -76,9 +74,11 @@ public class GUN : MonoBehaviour
 
         Camera cam = mainCam.GetComponent<Camera>();
 
+
         if (!reeling)
         {
             aiming = controlsManager.aim.ReadValue<float>() > 0;
+            gunAnim.SetBool("Aim", aiming);
 
             if (aiming && controlsManager.fire.WasPressedThisFrame() && spearProjectile == null)
             {
@@ -116,8 +116,8 @@ public class GUN : MonoBehaviour
             {
                 audioManager.scoping = true;
 
-                gun.transform.localPosition = new Vector3(0, -0.43f, 0.54f);
-                gun.transform.localEulerAngles = new Vector3(0, 180, 0);
+                gameObject.transform.localPosition = new Vector3(0, -0.43f, 0.54f);
+                gameObject.transform.localEulerAngles = new Vector3(0, 180, 0);
                 rightClickGraphic.SetActive(false);
 
                 cam.fieldOfView = Mathf.Clamp(cam.fieldOfView - 30 * Time.deltaTime, zoomVariable, FOVVariable);
@@ -125,9 +125,6 @@ public class GUN : MonoBehaviour
             else if (!aiming || spearProjectile != null)
             {
                 audioManager.scoping = false;
-
-                gun.transform.localPosition = gunStartingPos;
-                gun.transform.localEulerAngles = gunStartingRot;
 
                 cam.fieldOfView = Mathf.Clamp(cam.fieldOfView + 30 * Time.deltaTime, zoomVariable, FOVVariable);
             }
@@ -163,9 +160,6 @@ public class GUN : MonoBehaviour
                 }
             }
             float strength = fish.GetComponent<FishBehavior>().sizeModifier / ((gameManager.itemsLevel[1] / 1.5f) + 1f);
-
-            gun.transform.localPosition = gunStartingPos;
-            gun.transform.localEulerAngles = gunStartingRot;
 
             spearProjectile.transform.position = fish.transform.position;
 
@@ -376,13 +370,14 @@ public class GUN : MonoBehaviour
         audioManager.PlayAudio(3);
         audioManager.PlayAudio(4);
         screenShakeAnim.SetTrigger("Shake");
+        gunAnim.SetTrigger("Fire");
 
         spear.SetActive(false);
 
-        spearProjectile = Instantiate(spearPrefab, spearBasePos.position, 
-            Quaternion.Euler(transform.eulerAngles.x - 90, transform.eulerAngles.y, transform.eulerAngles.z));
+        spearProjectile = Instantiate(spearPrefab, shootDir.position, 
+            Quaternion.Euler(shootDir.eulerAngles.x + 90, shootDir.eulerAngles.y, shootDir.eulerAngles.z));
         spearRigidbody = spearProjectile.GetComponent<Rigidbody>();
-        spearRigidbody.linearVelocity = transform.forward * shotSpeed * -40;
+        spearRigidbody.linearVelocity = shootDir.forward * shotSpeed * 40;
     }
     private void HitFish()
     {
@@ -395,6 +390,8 @@ public class GUN : MonoBehaviour
         if (Vector3.Distance(transform.position, fish.transform.position) < 5)
             reelTimer = 0;
         reeling = true;
+        aiming = false;
+        gunAnim.SetBool("Aim", aiming);
         gameManager.CursorLock(false);
         fish.GetComponent<FishBehavior>().AILevel = 3;
 
