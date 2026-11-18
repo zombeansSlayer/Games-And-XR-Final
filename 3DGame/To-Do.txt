@@ -1,0 +1,38 @@
+FOR DEMO (hopefully by Saturday):
+
+Fih Caught Graphic
+White Waves FX (Houdini)
+Circle Splash
+Fih in Cooler
+Fih Swimming SFX
+Hand Crank Animations
+Hands & Feet of Player
+Reel Button UI
+Sparks (maybe)
+Fix Cover Holder Materials
+Fix Pausing
+Simple Title Screen
+
+FOR FINISHED PRODUCT (hopefully before December):
+
+Market Scene Refinements and Finish
+Customer Character Model
+Customer Character Animations
+Fish Transport from Cooler to Storage Mechanics
+Proper Title Screen
+Settings
+All Market Sounds
+Meta/Macro Balance
+Game Ending
+Goal Established
+Proper UI
+Cross-day Results and Between Area Loading Graphic
+Better Font
+Clock UI
+Various fixes
+
+TO DO AFTER (whatever time remains)
+
+More Fish Variants
+Challenge Menu
+Various fixes
