@@ -5,8 +5,7 @@ White Waves FX (Houdini)
 Circle Splash
 Fih in Cooler
 Fih Swimming SFX
-Hand Crank Animations
-Hands & Feet of Player
+Feet of Player
 Reel Button UI
 Sparks (maybe)
 Fix Cover Holder Materials
