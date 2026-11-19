@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -1814588972138084531}
   - component: {fileID: 7580575649380152596}
   - component: {fileID: -469435180574848350}
+  - component: {fileID: 4609766215595263844}
   m_Layer: 0
   m_Name: Spear1
   m_TagString: Untagged
@@ -31,9 +32,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 1.4130174, y: 0.36880356, z: 1.7763567e-16}
-  m_LocalScale: {x: 0.320553, y: 1.3957825, z: 0.320553}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 7294948758013734731}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!33 &2687698715850176311
@@ -135,7 +137,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.50000006
+  m_Radius: 0.13
   m_Height: 1.8411388
   m_Direction: 1
   m_Center: {x: 0.000000011848151, y: -0.4575018, z: -0.00000015023683}
@@ -153,3 +155,49 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitFish: 0
   hitOther: 0
+--- !u!114 &4609766215595263844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2576213972062815574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bbe511d0525bbd42847c9dfebfc22dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chainLinkPrefab: {fileID: 8494864940723535808, guid: 4e7324af21b698f45887ce99b53c742c, type: 3}
+  linkSpacing: 0.085
+  linkSize: 1
+--- !u!1 &5706249692891610165
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7294948758013734731}
+  m_Layer: 0
+  m_Name: ChainPointSpear
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7294948758013734731
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5706249692891610165}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.114, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8884504795194072117}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

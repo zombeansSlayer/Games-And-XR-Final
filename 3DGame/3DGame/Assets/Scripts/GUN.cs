@@ -11,23 +11,28 @@ public class GUN : MonoBehaviour
     public GameObject mainCam;
     public GameObject fish;
     public GameObject spear;
+    public GameObject crankAnchor;
+    [SerializeField] private Vector3 cranchorOffset;
     private List<GameObject> reelButton = new List<GameObject> { };
     public GameObject fishPrefab;
     public GameObject spearPrefab;
     public GameObject reelButtonPrefab;
     public GameObject reelButtonPrefabCT;
     public GameObject rippleSpawnerPrefab;
+    public GameObject handPrefab;
 
     public GameObject rightClickGraphic;
     public GameObject scrollGraphic;
     public GameObject exitToMarketConfirm;
     private GameObject rippleSpawner;
+    private GameObject hand;
 
     [SerializeField] private Transform shootDir;
     public Transform spearBasePos;
     public TextMeshProUGUI caughtText;
     public Animator fishFinderAnim;
     public Animator screenShakeAnim;
+    public Animator crankAnim;
     public float baseButtonChance;
     int caught = 0;
 
@@ -147,9 +152,24 @@ public class GUN : MonoBehaviour
 
         if (reeling)
         {
+            crankAnim.SetBool("Cranking", reelTimer > 0);
+            crankAnim.SetBool("buttons", reelButton.Count > 0);
+
+            Animator handAnim = null;
+            Animator handAncAnim = null;
+
+            if (hand != null)
+            {
+                handAnim = hand.transform.GetChild(0).gameObject.GetComponent<Animator>();
+                handAncAnim = hand.GetComponent<Animator>();
+                handAncAnim.SetBool("Cranking", reelTimer > 0);
+                handAncAnim.SetBool("buttons", reelButton.Count > 0);
+            }
+
             if (fish == null)
             {
                 reeling = false;
+                crankAnim.SetBool("Reeling", reeling);
                 return;
             }
             for (int i = 0; i < reelButton.Count; i++)
@@ -234,6 +254,7 @@ public class GUN : MonoBehaviour
             {
                 if (reelTimer < -0.75f)
                 {
+                    handAncAnim.enabled = false;
                     audioManager.PlayAudio(9);
                 }
                 reelTimer = 0.3f;
@@ -251,21 +272,36 @@ public class GUN : MonoBehaviour
                     audioManager.PauseAudio(9);
                     audioManager.PlayAudio(10);
                     audioManager.PlayAudio(11);
+                    handAncAnim.enabled = true;
+                    handAncAnim.SetTrigger("Let Go Start");
+                    handAnim.SetTrigger("Release");
                 }
             }
             else if (reelTimer > 0)
             {
                 fish.GetComponent<FishBehavior>().reelModifier = 1f / strength;
+
+                Vector3 targetPosition =
+    crankAnchor.transform.parent.position;
+
+                hand.transform.position = targetPosition;
+
+                hand.transform.localPosition += cranchorOffset;
             }
+
+
 
             if (fish.transform.position.y >= -0.1f)
             {
                 catchFish();
 
+                handAnim.SetTrigger("Release");
+
                 audioManager.StopAudio(9);
 
                 reelTimer = 0;
                 reeling = false;
+                crankAnim.SetBool("Reeling", reeling);
                 gameManager.CursorLock(true);
                 if (reelButton.Count > 0)
                 {
@@ -332,6 +368,7 @@ public class GUN : MonoBehaviour
             if (fish == null)
             {
                 reeling = false;
+                crankAnim.SetBool("Reeling", reeling);
                 return;
             }
             float strength = fish.GetComponent<FishBehavior>().sizeModifier / ((gameManager.itemsLevel[1] / 3) + 1f);
@@ -343,6 +380,12 @@ public class GUN : MonoBehaviour
                 audioManager.PauseAudio(9);
                 audioManager.PlayAudio(10);
                 audioManager.PlayAudio(11);
+                Animator handAnim = hand.transform.GetChild(0).gameObject.GetComponent<Animator>();
+                handAnim.SetTrigger("Release");
+
+                Animator handAncAnim = hand.GetComponent<Animator>();
+                handAncAnim.enabled = true;
+                handAncAnim.SetTrigger("Let Go Start");
 
                 if (usingController)
                 {
@@ -390,6 +433,7 @@ public class GUN : MonoBehaviour
         if (Vector3.Distance(transform.position, fish.transform.position) < 5)
             reelTimer = 0;
         reeling = true;
+        crankAnim.SetBool("Reeling", reeling);
         aiming = false;
         gunAnim.SetBool("Aim", aiming);
         gameManager.CursorLock(false);
@@ -405,6 +449,9 @@ public class GUN : MonoBehaviour
     void catchFish()
     {
         Destroy(rippleSpawner);
+        Animator handAncAnim = hand.GetComponent<Animator>();
+        handAncAnim.enabled = true;
+        handAncAnim.SetTrigger("Finish");
         caught++;
         gameManager.fishInventory.Add(fish.GetComponent<FishBehavior>().sizeModifier);
         Destroy(fish);
@@ -423,7 +470,11 @@ public class GUN : MonoBehaviour
     public void BreakAwayFish()
     {
         Destroy(rippleSpawner);
+        Animator handAncAnim = hand.GetComponent<Animator>();
+        handAncAnim.enabled = true;
+        handAncAnim.SetTrigger("Finish");
         reeling = false;
+        crankAnim.SetBool("Reeling", reeling);
         gameManager.CursorLock(true);
         if (reelButton.Count > 0)
         {
@@ -435,5 +486,10 @@ public class GUN : MonoBehaviour
         spearProjectile.GetComponent<SpearHitDetect>().hitFish = false;
         returning = true;
         scrollGraphic.SetActive(false);
+    }
+    public void CreateHand()
+    {
+        if (reeling)
+            hand = Instantiate(handPrefab, transform.parent);
     }
 }

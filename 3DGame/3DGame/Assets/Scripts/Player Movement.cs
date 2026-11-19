@@ -52,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
 
             moveDirection = controlsManager.move.ReadValue<Vector2>();
 
-            if (usingController && !gun.aiming)
+            if (usingController && gun != null && !gun.aiming)
                 lookDirection = controlsManager.look.ReadValue<Vector2>() * 6;
             else
                 lookDirection = controlsManager.look.ReadValue<Vector2>();
