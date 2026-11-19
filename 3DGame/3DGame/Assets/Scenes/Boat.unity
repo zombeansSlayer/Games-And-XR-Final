@@ -7990,44 +7990,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1248495406}
   m_CullTransparentMesh: 1
---- !u!1001 &1251197801
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 2027543075}
-    m_Modifications:
-    - target: {fileID: 62994458479819304, guid: 5dff471cbd2f3374582295c52598ac68, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 62994458479819304, guid: 5dff471cbd2f3374582295c52598ac68, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 62994458479819304, guid: 5dff471cbd2f3374582295c52598ac68, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3817490824310334537, guid: 5dff471cbd2f3374582295c52598ac68, type: 3}
-      propertyPath: m_Name
-      value: HandAnchor
-      objectReference: {fileID: 0}
-    - target: {fileID: 3817490824310334537, guid: 5dff471cbd2f3374582295c52598ac68, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 5dff471cbd2f3374582295c52598ac68, type: 3}
---- !u!4 &1251197802 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 62994458479819304, guid: 5dff471cbd2f3374582295c52598ac68, type: 3}
-  m_PrefabInstance: {fileID: 1251197801}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1312391995
 GameObject:
   m_ObjectHideFlags: 0
@@ -9997,7 +9959,6 @@ Transform:
   m_Children:
   - {fileID: 5454841409294728252}
   - {fileID: 7003658232287458531}
-  - {fileID: 1251197802}
   - {fileID: 1506915818}
   m_Father: {fileID: 704411677}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
