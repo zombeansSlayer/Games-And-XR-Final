@@ -301,6 +301,8 @@ MonoBehaviour:
   AILevel: 0
   fish: {fileID: 3821551041761606415}
   anim: {fileID: 3581390256979989324}
+  causticMat: {fileID: 2100000, guid: 0c16e69213ea5a04ba6f4b1f6597ae49, type: 2}
+  water: {fileID: 2100000, guid: d9d1335d096f8f3408b5020ca20fc388, type: 2}
 --- !u!65 &4155684348758072495
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -10,6 +10,8 @@ public class FishBehavior : MonoBehaviour
     public int AILevel;
     public GameObject fish;
     [SerializeField] private Animator anim;
+    [SerializeField] private Material causticMat;
+    [SerializeField] private Material water;
 
     private List<List<Transform>> FishAreaBounds = new List<List<Transform>>();
     private List<Transform> FishBox;
@@ -68,6 +70,9 @@ public class FishBehavior : MonoBehaviour
         anim.SetInteger("FishAI", AILevel);
 
         moveTimer -= Time.deltaTime;
+
+        causticMat.mainTextureOffset = water.mainTextureOffset;
+
         if (moveTimer <= 0 && AILevel == 1 || floatingPosition2 == floatingPosition && AILevel == 1)
         {
             moveTimer = Random.Range(0.5f, 1.5f);

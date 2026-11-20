@@ -254,7 +254,8 @@ public class GUN : MonoBehaviour
             {
                 if (reelTimer < -0.75f)
                 {
-                    handAncAnim.enabled = false;
+                    if (handAncAnim != null)
+                        handAncAnim.enabled = false;
                     audioManager.PlayAudio(9);
                 }
                 reelTimer = 0.3f;
@@ -291,7 +292,7 @@ public class GUN : MonoBehaviour
 
 
 
-            if (fish.transform.position.y >= -0.1f)
+            if (fish.transform.position.y >= -0.2f)
             {
                 catchFish();
 
