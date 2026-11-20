@@ -1941,6 +1941,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waterMaterial: {fileID: 2100000, guid: d9d1335d096f8f3408b5020ca20fc388, type: 2}
   waterSpeed: 0.15
+  waterSpeedVarianceSpeed: 0.0001
 --- !u!43 &510760556
 Mesh:
   m_ObjectHideFlags: 0
@@ -16611,7 +16612,7 @@ MonoBehaviour:
   fish: {fileID: 0}
   spear: {fileID: 4893760176660612592}
   crankAnchor: {fileID: 1541841352}
-  cranchorOffset: {x: 0, y: -0.22, z: 0}
+  cranchorOffset: {x: 0, y: -0.24, z: 0}
   fishPrefab: {fileID: 3821551041761606415, guid: d83514dd86b30a144a29636c2fc5d051, type: 3}
   spearPrefab: {fileID: 2576213972062815574, guid: 5a4cfe88d55895045a4072445f601086, type: 3}
   reelButtonPrefab: {fileID: 7162047107731860652, guid: 685dcc5eb18c81c4790cdc754e0fef64, type: 3}
