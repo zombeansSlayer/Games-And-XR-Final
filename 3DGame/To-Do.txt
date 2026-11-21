@@ -1,16 +1,12 @@
 FOR DEMO (hopefully by Saturday):
 
 Fih Caught Graphic
-Water Distortion
 Circle Splash
 Fih in Cooler
 Fih Swimming SFX
 Feet of Player
-Reel Button UI
 Sparks (maybe)
-Fix Cover Holder Materials
-Fix Pausing
-Simple Title Screen
+Simple settings
 
 FOR FINISHED PRODUCT (hopefully before December):
 

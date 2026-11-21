@@ -18,7 +18,7 @@ public class ReelButton : MonoBehaviour
         }
         else
         {
-            buttonPos = new Vector2((index * 0.06f) + 0.55f, 0.5f);
+            buttonPos = new Vector2((index * 0.1f) + 0.55f, 0.5f);
             inputIndex = Random.Range(0, 4);
             gameObject.transform.GetChild(inputIndex).gameObject.SetActive(true);
         }
@@ -34,6 +34,10 @@ public class ReelButton : MonoBehaviour
 
     public void ClickButton()
     {
-        Destroy(gameObject);
+           Destroy(gameObject);
+    }
+    public void PressButton()
+    {
+        GetComponent<Animator>().SetTrigger("Pressed");
     }
 }

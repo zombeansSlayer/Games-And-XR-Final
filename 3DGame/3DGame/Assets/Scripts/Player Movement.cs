@@ -72,6 +72,7 @@ public class PlayerMovement : MonoBehaviour
         if (controlsManager.pause.WasPressedThisFrame() && !paused) // Pause
         {
             paused = true;
+            //Time.timeScale = 0f;
             gameManager.paused = true;
             pauseMenu.SetActive(paused);
 
@@ -89,6 +90,7 @@ public class PlayerMovement : MonoBehaviour
         else if (controlsManager.pause.WasPressedThisFrame() && paused) // Unpause
         {
             paused = false;
+            //Time.timeScale = 1f;
             gameManager.paused = false;
             pauseMenu.SetActive(paused);
             if (!hadMouseWhenPaused) gameManager.CursorLock(true);

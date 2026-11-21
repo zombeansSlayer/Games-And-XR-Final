@@ -403,7 +403,7 @@ public class GUN : MonoBehaviour
                         reelButton.Add(Instantiate(reelButtonPrefab, GameObject.Find("ReelButtonLayer").transform));
                     }
                 }
-                reelTimer = -0.5f;
+                reelTimer = -1f;
                 reelButtonBuffer = 3 * strength;
             }
         }

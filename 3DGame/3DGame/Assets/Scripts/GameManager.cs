@@ -120,4 +120,14 @@ public class GameManager : MonoBehaviour
             Cursor.visible = false;
         }
     }
+
+    //Main Menu Functions
+    public void Play()
+    {
+        SceneManager.LoadScene("Boat");
+    }
+    public void Quit()
+    {
+        Application.Quit();
+    }
 }
