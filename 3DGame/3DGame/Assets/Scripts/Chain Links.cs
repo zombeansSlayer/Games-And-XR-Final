@@ -36,7 +36,9 @@ public class ChainLinks : MonoBehaviour
             if (chainLinks.Count % 2 == 1)
                 newLink.transform.localEulerAngles = new Vector3(0, 0, 90);
 
-            newLink.transform.localScale = Vector3.one * linkSize;
+            //Vector3 spearSizeFactor = new Vector3(1 / harpoonPoint.parent.localScale.x, 1 / harpoonPoint.parent.localScale.y, 1 / harpoonPoint.parent.localScale.z);
+
+            newLink.transform.localScale = linkSize * Vector3.one;
         }
         while (chainLinks.Count > requiredLinks)
         {

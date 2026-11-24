@@ -13,8 +13,22 @@ public class ReelButton : MonoBehaviour
         Vector2 buttonPos = Vector2.zero;
         if (!usingController)
         {
-            buttonPos = new Vector2(Random.Range(0.1f, 0.9f), Random.Range(0.2f, 0.8f));
-            buttonPos = new Vector2(buttonPos.x - (buttonPos.x % 0.1f) + 0.05f, buttonPos.y - (buttonPos.y % 0.1f) + 0.05f);
+            bool overlapping = false;
+            do
+            {
+                overlapping = false;
+                buttonPos = new Vector2(Random.Range(0.1f, 0.9f), Random.Range(0.2f, 0.8f));
+                buttonPos = new Vector2(buttonPos.x - (buttonPos.x % 0.1f) + 0.05f, buttonPos.y - (buttonPos.y % 0.1f) + 0.05f);
+
+                foreach (GameObject otherButton in GameObject.FindGameObjectsWithTag("ReelButton"))
+                {
+                    if (otherButton == gameObject)
+                        continue;
+
+                    if (otherButton.GetComponent<RectTransform>().anchorMin == buttonPos)
+                        overlapping = true;
+                }
+            } while (overlapping);
         }
         else
         {

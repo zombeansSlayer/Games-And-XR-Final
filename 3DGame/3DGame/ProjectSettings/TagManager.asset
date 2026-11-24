@@ -14,6 +14,9 @@ TagManager:
   - WheelBox
   - Audio Manager
   - Controls Manager
+  - Water
+  - ReelButton
+  - InputUI
   layers:
   - Default
   - TransparentFX

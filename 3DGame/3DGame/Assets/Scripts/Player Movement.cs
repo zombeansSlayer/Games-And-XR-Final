@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -10,7 +11,6 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody rb;
     public float moveSpeed;
     public float accel;
-    public float lookSpeed;
     public GUN gun;
 
     private Vector2 mouse = Vector2.zero;
@@ -57,8 +57,8 @@ public class PlayerMovement : MonoBehaviour
             else
                 lookDirection = controlsManager.look.ReadValue<Vector2>();
 
-            mouse.x += lookDirection.x * lookSpeed;
-            mouse.y += lookDirection.y * lookSpeed;
+            mouse.x += lookDirection.x * gameManager.lookSpeed;
+            mouse.y += lookDirection.y * gameManager.lookSpeed;
             mouse.y = Mathf.Clamp(mouse.y, -90, 90);
 
             transform.rotation = Quaternion.Euler(0, mouse.x, 0);
@@ -89,17 +89,10 @@ public class PlayerMovement : MonoBehaviour
 
         else if (controlsManager.pause.WasPressedThisFrame() && paused) // Unpause
         {
-            paused = false;
-            //Time.timeScale = 1f;
-            gameManager.paused = false;
-            pauseMenu.SetActive(paused);
-            if (!hadMouseWhenPaused) gameManager.CursorLock(true);
-
-            if (audioManager != null) 
-                audioManager.EnableOrDisableAudio(true);
+            Unpause();
         }
     }
-    // CHATGPT'S PROPOSED MOVEMENT SCRIPT BASED ON MY PROPOSED SCRIPT (has a startup to it and neutralizes strafing)
+
     private void FixedUpdate()
     {
         if (Cursor.visible == false)
@@ -109,11 +102,7 @@ public class PlayerMovement : MonoBehaviour
                 (transform.forward * input.y * moveSpeed) +
                 (transform.right * input.x * moveSpeed);
 
-            rb.linearVelocity = Vector3.MoveTowards(
-                rb.linearVelocity,
-                targetVelocity,
-                accel * Time.fixedDeltaTime
-            );
+            rb.linearVelocity = Vector3.MoveTowards(rb.linearVelocity, targetVelocity, accel * Time.fixedDeltaTime);
         }
     }
     
@@ -132,6 +121,21 @@ public class PlayerMovement : MonoBehaviour
     public void CursorLock(bool i)
     {
         gameManager.CursorLock(i);
+    }
+    public void Unpause()
+    {
+        paused = false;
+        //Time.timeScale = 1f;
+        gameManager.paused = false;
+        pauseMenu.SetActive(paused);
+        if (!hadMouseWhenPaused) gameManager.CursorLock(true);
+
+        if (audioManager != null)
+            audioManager.EnableOrDisableAudio(true);
+    }
+    public void ReturnToMain()
+    {
+        SceneManager.LoadScene("Title Screen");
     }
 
 

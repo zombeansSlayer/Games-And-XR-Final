@@ -15,6 +15,10 @@ public class GameManager : MonoBehaviour
     public List<float> fishInventory = new List<float> { };
     public bool paused;
 
+    [HideInInspector] public bool controlDisplays;
+    [HideInInspector] public float FOVVariable;
+    [HideInInspector] public float lookSpeed;
+
     public bool warned = false;
     float dayClock;
     int day;
@@ -26,6 +30,11 @@ public class GameManager : MonoBehaviour
         if (GameObject.FindGameObjectsWithTag("Game Manager").Length > 1)
             Destroy(gameObject);
         DontDestroyOnLoad(gameObject);
+
+        if (FOVVariable <= 0)
+            FOVVariable = 60;
+        if (lookSpeed <= 0)
+            lookSpeed = 0.25f;
     }
 
     void Start()
@@ -119,15 +128,5 @@ public class GameManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
-    }
-
-    //Main Menu Functions
-    public void Play()
-    {
-        SceneManager.LoadScene("Boat");
-    }
-    public void Quit()
-    {
-        Application.Quit();
     }
 }

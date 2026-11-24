@@ -45,7 +45,7 @@ public class FishBehavior : MonoBehaviour
 
         sizeModifier = currentBiggest;
 
-        transform.localScale = new Vector3(sizeModifier * 15, sizeModifier * 15, sizeModifier * 15);
+        transform.localScale = Vector3.one * sizeModifier * 10;
         //sizeModifier = (transform.localScale.x + transform.localScale.y + transform.localScale.z) / 45;
 
         foreach (GameObject t in GameObject.FindGameObjectsWithTag("Bounds"))

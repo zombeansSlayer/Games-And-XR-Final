@@ -10,14 +10,13 @@ public class AudioManager : MonoBehaviour
     public List<AudioSource> sounds = new List<AudioSource> { };
     private List<float> ogVolume = new List<float> { };
     private List<float> ogPitch = new List<float> { };
-    public float masterVolume;
-    public float ambienceVolume;
-    public float soundsVolume;
+    //public float masterVolume;
+    //public float ambienceVolume;
+    //public float soundsVolume;
 
     [SerializeField] private AudioMixerGroup masterMixerGroup;
 
     [SerializeField] private Animator waveCrashAnimator;
-    [SerializeField] private Animator splashAnim;
 
     private bool fadingOut;
     private GameManager gameManager;
@@ -43,24 +42,6 @@ public class AudioManager : MonoBehaviour
 
     private void Update()
     {
-        // Dynamic audio fade
-
-        if (scoping)
-        {
-            masterMixerGroup.audioMixer.GetFloat("MasterVolume", out float volume);
-            masterMixerGroup.audioMixer.SetFloat("MasterVolume", Mathf.Clamp(volume - ((masterVolume + 20) * Time.deltaTime), masterVolume - 5f, masterVolume));
-        }
-        else if (!fadingOut)
-        {
-            masterMixerGroup.audioMixer.GetFloat("MasterVolume", out float volume);
-            masterMixerGroup.audioMixer.SetFloat("MasterVolume", Mathf.Clamp(volume + ((masterVolume + 40) * Time.deltaTime), -80, masterVolume));
-        }
-        else if (fadingOut && !scoping)
-        {
-            masterMixerGroup.audioMixer.GetFloat("MasterVolume", out float volume);
-            masterMixerGroup.audioMixer.SetFloat("MasterVolume", Mathf.Clamp(volume - ((masterVolume + 40) * Time.deltaTime), -80, masterVolume));
-        }
-
         // Randomized ambience sounds
         if (sounds.Count < 3)
             return;
@@ -105,5 +86,48 @@ public class AudioManager : MonoBehaviour
     public void StopAudio(int i)
     {
         sounds[i].Stop();
+    }
+
+    public void PlayAudioNormal(int i)
+    {
+        if (sounds[i] == null)
+        {
+            Debug.Log($"The sound at index {i} doesn't exist. Please add the sound."); 
+            return;
+        }
+
+        sounds[i].Play();
+    }
+
+    public void ChangeAudioVolume(int i, float f)
+    {
+        if (sounds[i] == null)
+        {
+            Debug.Log($"The sound at index {i} doesn't exist. Please add the sound.");
+            return;
+        }
+
+        sounds[i].volume += f;
+    }
+
+    public void SetMasterVolume(float linearVolume)
+    {
+        float dB = Mathf.Log10(Mathf.Clamp(linearVolume, 0.0001f, 1f)) * 20f;
+        masterMixerGroup.audioMixer.SetFloat("MasterVolume", dB);
+    }
+    public void SetMusicVolume(float linearVolume)
+    {
+        float dB = Mathf.Log10(Mathf.Clamp(linearVolume, 0.0001f, 1f)) * 20f;
+        masterMixerGroup.audioMixer.SetFloat("MusicVolume", dB);
+    }
+    public void SetSFXVolume(float linearVolume)
+    {
+        float dB = Mathf.Log10(Mathf.Clamp(linearVolume, 0.0001f, 1f)) * 20f;
+        masterMixerGroup.audioMixer.SetFloat("SFXVolume", dB);
+    }
+    public void SetAmbientVolume(float linearVolume)
+    {
+        float dB = Mathf.Log10(Mathf.Clamp(linearVolume, 0.0001f, 1f)) * 20f;
+        masterMixerGroup.audioMixer.SetFloat("AmbientVolume", dB);
     }
 }
