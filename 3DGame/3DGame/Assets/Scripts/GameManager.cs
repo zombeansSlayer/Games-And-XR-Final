@@ -15,9 +15,14 @@ public class GameManager : MonoBehaviour
     public List<float> fishInventory = new List<float> { };
     public bool paused;
 
-    [HideInInspector] public bool controlDisplays;
-    [HideInInspector] public float FOVVariable;
-    [HideInInspector] public float lookSpeed;
+    //[HideInInspector] 
+    public bool controlDisplays = true;
+    public float FOVVariable;
+    public float lookSpeed;
+
+    public float masterVol;
+    public float sfxVol;
+    public float ambientVol;
 
     public bool warned = false;
     float dayClock;
@@ -51,27 +56,27 @@ public class GameManager : MonoBehaviour
         if (paused)
             return;
 
-            dayClock += Time.deltaTime / 2;
-            if (clock != null)
+        if (!Cursor.visible) dayClock += Time.deltaTime / 2;
+        if (clock != null)
+        {
+            if (dayClock < 240)
+                clock.text = $"{MathF.Floor(dayClock / 60) + 8}:{(int)(dayClock % 60):D2} AM";
+            else
             {
-                if (dayClock < 240)
-                    clock.text = $"{MathF.Floor(dayClock / 60) + 8}:{(int)(dayClock % 60):D2} AM";
-                else
-                {
-                    clock.text = $"{MathF.Floor(dayClock / 60) - 3}:{(int)(dayClock % 60):D2} PM";
-                }
+                clock.text = $"{MathF.Floor(dayClock / 60) - 3}:{(int)(dayClock % 60):D2} PM";
             }
+        }
 
-            if (dayClock >= 600 && !warned)
+        if (dayClock >= 600 && !warned)
         {
             clock.transform.parent.GetComponent<Animator>().SetTrigger("Night");
             warned = true;
         }
 
-            if (dayClock >= 660)
-            {
-                NewDay();
-            }
+        if (dayClock >= 660)
+        {
+            NewDay();
+        }
     }
 
     public void Upgrade(int itemToUpgrade)
@@ -88,7 +93,8 @@ public class GameManager : MonoBehaviour
     {
         dayClock = 0;
         day++;
-        SceneManager.LoadScene("Market");
+        //SceneManager.LoadScene("Market");
+        SceneManager.LoadScene("Title Screen");
         warned = false;
     }
     public void FastTravel(bool goingOut)

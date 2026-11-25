@@ -94,7 +94,7 @@ public class GUN : MonoBehaviour
             {
                 ShootGun();
             }
-            if (!aiming && controlsManager.fire.WasPressedThisFrame() == true && !atWheel && !Cursor.visible)
+            if (!aiming && controlsManager.fire.WasPressedThisFrame() && !atWheel && !Cursor.visible)
             {
                 rightClickGraphic.SetActive(true);
             }
@@ -151,8 +151,10 @@ public class GUN : MonoBehaviour
                     fishRespawnTimer = 0.01f;
             }
 
-            caughtText.text = $"Caught: {caught} ";
+            if (caughtScreen != null && usingController && controlsManager.A.WasPressedThisFrame())
+                caughtScreen.GetComponent<Animator>().SetTrigger("Pressed");
 
+            caughtText.text = $"Caught: {caught} ";
         }
 
         if (reeling)
@@ -304,21 +306,6 @@ public class GUN : MonoBehaviour
             if (fish.transform.position.y >= -0.2f)
             {
                 catchFish();
-
-                handAnim.SetTrigger("Release");
-
-                audioManager.StopAudio(9);
-
-                reelTimer = 0;
-                reeling = false;
-                crankAnim.SetBool("Reeling", reeling);
-                if (reelButton.Count > 0)
-                {
-                    foreach (var button in reelButton)
-                    {
-                        Destroy(button);
-                    }
-                }
             }
         }
     }
@@ -486,6 +473,7 @@ public class GUN : MonoBehaviour
 
         Destroy(rippleSpawner);
         Animator handAncAnim = hand.GetComponent<Animator>();
+        Animator handAnim = hand.transform.GetChild(0).gameObject.GetComponent<Animator>();
         handAncAnim.enabled = true;
         handAncAnim.SetTrigger("Finish");
         caught++;
@@ -495,12 +483,36 @@ public class GUN : MonoBehaviour
         caughtScreen = Instantiate(caughtScreenPrefab, GameObject.Find("Canvas").transform);
         caughtScreen.transform.GetChild(3).gameObject.GetComponent<TextMeshProUGUI>().text = new string($"Size: {(lbs * 5):0.000} lbs");
 
-        gameManager.fishInventory.Add(fish.GetComponent<FishBehavior>().sizeModifier);
+        if (!gameManager.controlDisplays)
+            caughtScreen.transform.GetChild(2).gameObject.SetActive(false);
+
+        else if (usingController)
+        {
+            caughtScreen.transform.GetChild(2).gameObject.SetActive(false);
+            caughtScreen.transform.GetChild(4).gameObject.SetActive(true);
+        }
+
+            gameManager.fishInventory.Add(fish.GetComponent<FishBehavior>().sizeModifier);
         Destroy(fish);
         Destroy(spearProjectile);
         spear.SetActive(true);
         returning = false;
         scrollGraphic.SetActive(false);
+
+        handAnim.SetTrigger("Release");
+
+        audioManager.StopAudio(9);
+
+        reelTimer = 0;
+        reeling = false;
+        crankAnim.SetBool("Reeling", reeling);
+        if (reelButton.Count > 0)
+        {
+            foreach (var button in reelButton)
+            {
+                Destroy(button);
+            }
+        }
     }
     void SpawnFish()
     {
@@ -530,9 +542,12 @@ public class GUN : MonoBehaviour
                 Destroy(button);
             }
         }
+        reelTimer = 0;
         spearProjectile.GetComponent<SpearHitDetect>().hitFish = false;
         returning = true;
         scrollGraphic.SetActive(false);
+
+        gameManager.CursorLock(true);
     }
     public void CreateHand()
     {

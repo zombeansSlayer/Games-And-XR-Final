@@ -382,6 +382,24 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MenuNavBackwards"",
+                    ""type"": ""Button"",
+                    ""id"": ""6abe3947-0ff1-4204-afd4-5a8427845e7d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MenuNavForwards"",
+                    ""type"": ""Button"",
+                    ""id"": ""95ac5716-38ee-4698-a429-09821ed3d6a9"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -538,6 +556,94 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""A"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f5ca0f42-da96-4721-ac98-64f0cd11b281"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""MenuNavBackwards"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dfce0b3f-fee5-4b79-8e6b-69d24ed087ff"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""MenuNavBackwards"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""807e839a-5c53-44c2-a6d4-5c4f47596d18"",
+                    ""path"": ""<Gamepad>/leftStick/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""MenuNavBackwards"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b50ba7e4-76c2-423d-8093-4ba7dd3f34ce"",
+                    ""path"": ""<Gamepad>/leftStick/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""MenuNavBackwards"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""20c6585b-2be5-4512-9d76-aab2cbc00d55"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""MenuNavForwards"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9a22a506-c980-491b-b618-61d821585da2"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""MenuNavForwards"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8b47adb9-4917-4e71-b055-e35749869e73"",
+                    ""path"": ""<Gamepad>/leftStick/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""MenuNavForwards"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""703c2f87-fea2-4f48-a682-61c069a9a08a"",
+                    ""path"": ""<Gamepad>/leftStick/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""MenuNavForwards"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -655,6 +761,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_PlayerCT_B = m_PlayerCT.FindAction("B", throwIfNotFound: true);
         m_PlayerCT_X = m_PlayerCT.FindAction("X", throwIfNotFound: true);
         m_PlayerCT_Y = m_PlayerCT.FindAction("Y", throwIfNotFound: true);
+        m_PlayerCT_MenuNavBackwards = m_PlayerCT.FindAction("MenuNavBackwards", throwIfNotFound: true);
+        m_PlayerCT_MenuNavForwards = m_PlayerCT.FindAction("MenuNavForwards", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Newaction = m_UI.FindAction("New action", throwIfNotFound: true);
@@ -913,6 +1021,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerCT_B;
     private readonly InputAction m_PlayerCT_X;
     private readonly InputAction m_PlayerCT_Y;
+    private readonly InputAction m_PlayerCT_MenuNavBackwards;
+    private readonly InputAction m_PlayerCT_MenuNavForwards;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerCT".
     /// </summary>
@@ -968,6 +1078,14 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerCT/Y".
         /// </summary>
         public InputAction @Y => m_Wrapper.m_PlayerCT_Y;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerCT/MenuNavBackwards".
+        /// </summary>
+        public InputAction @MenuNavBackwards => m_Wrapper.m_PlayerCT_MenuNavBackwards;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerCT/MenuNavForwards".
+        /// </summary>
+        public InputAction @MenuNavForwards => m_Wrapper.m_PlayerCT_MenuNavForwards;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1027,6 +1145,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Y.started += instance.OnY;
             @Y.performed += instance.OnY;
             @Y.canceled += instance.OnY;
+            @MenuNavBackwards.started += instance.OnMenuNavBackwards;
+            @MenuNavBackwards.performed += instance.OnMenuNavBackwards;
+            @MenuNavBackwards.canceled += instance.OnMenuNavBackwards;
+            @MenuNavForwards.started += instance.OnMenuNavForwards;
+            @MenuNavForwards.performed += instance.OnMenuNavForwards;
+            @MenuNavForwards.canceled += instance.OnMenuNavForwards;
         }
 
         /// <summary>
@@ -1071,6 +1195,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Y.started -= instance.OnY;
             @Y.performed -= instance.OnY;
             @Y.canceled -= instance.OnY;
+            @MenuNavBackwards.started -= instance.OnMenuNavBackwards;
+            @MenuNavBackwards.performed -= instance.OnMenuNavBackwards;
+            @MenuNavBackwards.canceled -= instance.OnMenuNavBackwards;
+            @MenuNavForwards.started -= instance.OnMenuNavForwards;
+            @MenuNavForwards.performed -= instance.OnMenuNavForwards;
+            @MenuNavForwards.canceled -= instance.OnMenuNavForwards;
         }
 
         /// <summary>
@@ -1406,6 +1536,20 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnY(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MenuNavBackwards" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMenuNavBackwards(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MenuNavForwards" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMenuNavForwards(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

@@ -5,9 +5,11 @@ public class MainMenu : MonoBehaviour
 {
     [SerializeField] private GameObject TitleMenu;
     [SerializeField] private GameObject SettingsMenu;
+    [SerializeField] private GameObject DifficultyMenu;
 
     private Animator titleAnim;
     private Animator settingsAnim;
+    private Animator difficultyAnim;
 
     private GameManager gameManager;
 
@@ -17,6 +19,7 @@ public class MainMenu : MonoBehaviour
 
         titleAnim = TitleMenu.GetComponent<Animator>();
         settingsAnim = SettingsMenu.GetComponent<Animator>();
+        difficultyAnim = DifficultyMenu.GetComponent<Animator>();
 
         titleAnim.SetTrigger("Enter");
     }
@@ -27,36 +30,34 @@ public class MainMenu : MonoBehaviour
         settingsAnim.SetTrigger("Enter");
     }
 
-    public void CloseSettings() 
+    public void CloseSettings()
     {
         titleAnim.SetTrigger("Enter");
         settingsAnim.SetTrigger("Exit");
     }
 
+    public void OpenDiff()
+    {
+        titleAnim.SetTrigger("Exit");
+        difficultyAnim.SetTrigger("Enter");
+    }
+
+    public void CloseDiff()
+    {
+        titleAnim.SetTrigger("Enter");
+        difficultyAnim.SetTrigger("Exit");
+    }
+
+
+
     //Main Menu Functions
     public void Play()
     {
+        gameManager.paused = false;
         SceneManager.LoadScene("Boat");
     }
     public void Quit()
     {
         Application.Quit();
-    }
-    public void controlDisplaysChange(bool b)
-    {
-        gameManager.controlDisplays = b;
-    }
-    public void fullscreenChange(bool b)
-    {
-        Screen.fullScreen = b;
-    }
-
-    public void FOVChange(float f)
-    {
-        gameManager.FOVVariable = f;
-    }
-    public void lookSpeedChange(float f)
-    {
-        gameManager.lookSpeed = f;
     }
 }

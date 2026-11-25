@@ -21,6 +21,8 @@ public class ControlsManager : MonoBehaviour
     [HideInInspector] public InputAction X;
     [HideInInspector] public InputAction Y;
     [HideInInspector] public InputAction interact;
+    [HideInInspector] public InputAction MenuNavBackwards;
+    [HideInInspector] public InputAction MenuNavForwards;
 
     private void Awake()
     {
@@ -44,15 +46,18 @@ public class ControlsManager : MonoBehaviour
         X.Enable();
         Y.Enable();
         interact.Enable();
+        MenuNavBackwards.Enable();
+        MenuNavForwards.Enable();
         A = controls.PlayerCT.A;
         B = controls.PlayerCT.B;
         X = controls.PlayerCT.X;
         Y = controls.PlayerCT.Y;
+        MenuNavBackwards = controls.PlayerCT.MenuNavBackwards;
+        MenuNavForwards = controls.PlayerCT.MenuNavForwards;
 
         InputSystem.onDeviceChange += OnDeviceChanged;
         InputSystem.onActionChange += OnMovePerformed;
 
-        usingController = Gamepad.current != null;
         ChangeInputType(usingController);
     }
     private void OnDisable()
@@ -72,6 +77,8 @@ public class ControlsManager : MonoBehaviour
         X.Disable();
         Y.Disable();
         interact.Disable();
+        MenuNavBackwards.Disable();
+        MenuNavForwards.Disable();
 
         InputSystem.onDeviceChange -= OnDeviceChanged;
         InputSystem.onActionChange -= OnMovePerformed;

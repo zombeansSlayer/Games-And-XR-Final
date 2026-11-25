@@ -24,14 +24,18 @@ public class AudioManager : MonoBehaviour
 
     private float ambientNoiseTimer;
 
+    private void Awake()
+    {
+        sounds = gameObject.GetComponents<AudioSource>().ToList();
+        sounds.Remove(sounds[0]); // The first sound on the AudioManager should be the constant ambient noise
+    }
+
     private void Start()
     {
         gameManager = GameObject.FindWithTag("Game Manager").GetComponent<GameManager>();
 
         ambientNoiseTimer = Random.Range(15.0f, 20.0f);
 
-        sounds = gameObject.GetComponents<AudioSource>().ToList();
-        sounds.Remove(sounds[0]); // The first sound on the AudioManager should be the constant ambient noise
 
         foreach (var sound in sounds)
         {
@@ -90,13 +94,14 @@ public class AudioManager : MonoBehaviour
 
     public void PlayAudioNormal(int i)
     {
-        if (sounds[i] == null)
+        if (i >= sounds.Count)
         {
             Debug.Log($"The sound at index {i} doesn't exist. Please add the sound."); 
             return;
         }
 
-        sounds[i].Play();
+        if (!sounds[i].isPlaying)
+            sounds[i].Play();
     }
 
     public void ChangeAudioVolume(int i, float f)
@@ -112,22 +117,22 @@ public class AudioManager : MonoBehaviour
 
     public void SetMasterVolume(float linearVolume)
     {
-        float dB = Mathf.Log10(Mathf.Clamp(linearVolume, 0.0001f, 1f)) * 20f;
+        float dB = Mathf.Clamp(linearVolume, -80f, 20f);
         masterMixerGroup.audioMixer.SetFloat("MasterVolume", dB);
     }
     public void SetMusicVolume(float linearVolume)
     {
-        float dB = Mathf.Log10(Mathf.Clamp(linearVolume, 0.0001f, 1f)) * 20f;
+        float dB = Mathf.Clamp(linearVolume, -80f, 20f);
         masterMixerGroup.audioMixer.SetFloat("MusicVolume", dB);
     }
     public void SetSFXVolume(float linearVolume)
     {
-        float dB = Mathf.Log10(Mathf.Clamp(linearVolume, 0.0001f, 1f)) * 20f;
+        float dB = Mathf.Clamp(linearVolume, -80f, 20f);
         masterMixerGroup.audioMixer.SetFloat("SFXVolume", dB);
     }
     public void SetAmbientVolume(float linearVolume)
     {
-        float dB = Mathf.Log10(Mathf.Clamp(linearVolume, 0.0001f, 1f)) * 20f;
+        float dB = Mathf.Clamp(linearVolume, -80f, 20f);
         masterMixerGroup.audioMixer.SetFloat("AmbientVolume", dB);
     }
 }

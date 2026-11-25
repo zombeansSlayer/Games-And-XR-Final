@@ -17,6 +17,7 @@ TagManager:
   - Water
   - ReelButton
   - InputUI
+  - InputUICT
   layers:
   - Default
   - TransparentFX

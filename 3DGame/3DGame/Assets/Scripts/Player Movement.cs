@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed;
     public float accel;
     public GUN gun;
+    public ControllerMenuNav menuNav;
 
     private Vector2 mouse = Vector2.zero;
 
@@ -85,6 +86,8 @@ public class PlayerMovement : MonoBehaviour
 
             if (audioManager != null)
                 audioManager.EnableOrDisableAudio(false);
+
+            menuNav.SelectNewMenu(pauseMenu.transform.GetChild(0).gameObject);
         }
 
         else if (controlsManager.pause.WasPressedThisFrame() && paused) // Unpause
@@ -128,10 +131,14 @@ public class PlayerMovement : MonoBehaviour
         //Time.timeScale = 1f;
         gameManager.paused = false;
         pauseMenu.SetActive(paused);
+        pauseMenu.transform.GetChild(0).gameObject.SetActive(true);
+        pauseMenu.transform.GetChild(1).gameObject.SetActive(false);
         if (!hadMouseWhenPaused) gameManager.CursorLock(true);
 
         if (audioManager != null)
             audioManager.EnableOrDisableAudio(true);
+
+        menuNav.SelectNewMenu(menuNav.gameObject);
     }
     public void ReturnToMain()
     {
